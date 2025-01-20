@@ -6,10 +6,10 @@
 { For further information / comments, visit our WEB site at            }
 { http://www.TeamCoherence.com                                         }
 {**********************************************************************}
-{}
-{ $Log:  22939: MainForm.pas 
-{
-{   Rev 1.0    09/10/2003 3:08:58 PM  Jeremy Darling
+//
+// $Log:  22939: MainForm.pas
+//
+//   Rev 1.0    09/10/2003 3:08:58 PM  Jeremy Darling
 { Project Checked into TC for the first time
 }
 {***************************************************************
@@ -25,7 +25,7 @@
 
 unit MainForm;
 
-{$MODE Delphi}
+{$mode ObjFPC}{$H+}
 
 interface
 
