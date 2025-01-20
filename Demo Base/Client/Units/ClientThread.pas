@@ -15,12 +15,13 @@
 }
 unit ClientThread;
 
-{$MODE Delphi}
+{$mode Delphi}
 
 interface
 
 uses
   IdTCPClient,
+  IdStack,
   ComCtrls,
   Classes,
   SysUtils,
@@ -100,6 +101,11 @@ begin
           try
             FClient.Connect;
           except
+            //on E: EIdSocketError do
+              begin
+                FreeOnTerminate := True;
+                Terminate;
+              end;
           end;
           FLastTick := GetTickCount64;
         end

@@ -14,7 +14,7 @@
 }
 unit MainForm;
 
-{$MODE Delphi}
+{$mode Delphi}
 
 interface
 

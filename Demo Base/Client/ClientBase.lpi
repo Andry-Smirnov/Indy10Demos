@@ -52,7 +52,7 @@
     <SearchPaths>
       <IncludeFiles Value="Forms;Units;$(ProjOutDir)"/>
       <OtherUnitFiles Value="Forms;Units"/>
-      <UnitOutputDirectory Value="bin\"/>
+      <UnitOutputDirectory Value="bin"/>
     </SearchPaths>
     <Linking>
       <Debugging>
