@@ -7,21 +7,26 @@
 { http://www.TeamCoherence.com                                         }
 {**********************************************************************}
 {}
-{ $Log:  22954: MainForm.pas 
-{
-{   Rev 1.0    09/10/2003 3:10:44 PM  Jeremy Darling
+// $Log:  22954: MainForm.pas
+//
+//   Rev 1.0    09/10/2003 3:10:44 PM  Jeremy Darling
 { Project Checked into TC for the first time
 }
 unit MainForm;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, StdCtrls, ClientThread,
-  IdAntiFreezeBase, IdAntiFreeze, SyncObjs, ExtCtrls, ComCtrls, IniFiles;
+  LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  IdComponent, StdCtrls, ClientThread,
+  IdAntiFreeze, IdTCPClient, SyncObjs, ExtCtrls, ComCtrls, IniFiles;
 
 type
+
+  { TfrmMain }
+
   TfrmMain = class(TForm)
     SampleClient: TIdTCPClient;
     Button1: TButton;
@@ -73,7 +78,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.lfm}
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
@@ -152,36 +157,35 @@ begin
 
   for i := 0 to StrToIntDef(edThreads.Text, 0) -1 do
     begin
-      with TClientThread(fThreads[fThreads.Add(TClientThread.Create(true))]) do
+      with TClientThread(fThreads[fThreads.Add( TClientThread.Create(True) )]) do
         begin
           AssignClient(SampleClient);
 
           ListItem := lvStatus.Items.Add;
           ListItem.Caption := IntToStr(i);
           ListItem.SubItems.Add('Creating');
+
           SleepTime := random(st);
           if SleepTime < 5 then
             while SleepTime < 5 do
               SleepTime := random(st);
 
-          uiLock := self.uiLock;
-
           Client.Tag := Integer(Pointer(TClientThread(fThreads[i])));
-          State      := -2;
-          Resume;
+          State := -2;
+          Start;
         end;
     end;
 
-  ClientsConnected := true;
+  ClientsConnected := True;
 end;
 
 procedure TfrmMain.StopThreads;
 begin
-  ClientsConnected := false;
+  ClientsConnected := False;
   if fThreads.Count > 0 then
     while fThreads.Count > 0 do
       begin
-        TClientThread(fThreads[0]).FreeOnTerminate := true;
+        TClientThread(fThreads[0]).FreeOnTerminate := True;
         TClientThread(fThreads[0]).Terminate;
         fThreads.Delete(0);
       end;
