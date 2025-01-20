@@ -25,14 +25,28 @@
 
 unit MainForm;
 
+{$MODE Delphi}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  IdBaseComponent, IdComponent, IdTCPServer, IdContext, StdCtrls, IdScheduler,
-  IdSchedulerOfThread, IdSchedulerOfThreadDefault, CheckLst, ComCtrls, ExtCtrls,
-  IdDsnCoreResourceStrings, IdStack, IdSocketHandle, ShellAPI, IdGlobal,
-  IniFiles, IdAntiFreezeBase, IdAntiFreeze, IdCustomTCPServer, IdStackWindows;
+  LCLIntf, LCLType,
+  //LMessages, Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  //IdBaseComponent,
+  IdComponent,
+  IdTCPServer,
+  IdContext,
+  StdCtrls,
+  //IdScheduler,
+  //IdSchedulerOfThread,
+  IdSchedulerOfThreadDefault, CheckLst, ComCtrls, ExtCtrls,
+  IdDsnCoreResourceStrings, IdStack, IdSocketHandle, IdGlobal,
+  IniFiles,
+  //IdAntiFreezeBase,
+  IdAntiFreeze,
+  IdCustomTCPServer,
+  IdStackWindows;
 
 type
   TfrmMain = class(TForm)
@@ -99,7 +113,12 @@ var
   
 implementation
 
-{$R *.DFM}
+{$R *.lfm}
+
+
+var
+  _GIdPorts: TIdPortList = nil;
+
 
 procedure TfrmMain.btnStartStopClick(Sender: TObject);
 begin
@@ -130,9 +149,51 @@ begin
 // Add your code after this comment
 end;
 
+function GetPorts: TIdPortList;
+var
+  s: string;
+  idx, iPosSlash: {$IFDEF BYTE_COMPARE_SETS}Byte{$ELSE}Integer{$ENDIF};
+  i: {$IFDEF HAS_GENERICS_TList}Integer{$ELSE}PtrInt{$ENDIF};
+  iPrev: PtrInt;
+  sl: TStringList;
+begin
+  if _GIdPorts = nil then
+  begin
+    _GIdPorts := TIdPortList.Create;
+    sl := TStringList.Create;
+    try
+      // TODO: use TStreamReader instead, on versions that support it
+      sl.LoadFromFile(ServicesFilePath);  {do not localize}
+      iPrev := 0;
+      for idx := 0 to sl.Count - 1 do
+        begin
+          s := sl[idx];
+          iPosSlash := IndyPos('/', s);   {do not localize}
+          if (iPosSlash > 0) and (not (IndyPos('#', s) in [1..iPosSlash])) then {do not localize}
+            begin // presumably found a port number that isn't commented    {Do not Localize}
+              i := iPosSlash;
+              repeat
+                Dec(i);
+                if i = 0 then
+                  raise EIdCorruptServicesFile.CreateFmt('%s is corrupt.', [ServicesFilePath]); {do not localize}
+              //TODO: Make Whitespace a function to elim warning
+              until Ord(s[i]) in IdWhiteSpace;
+              i := IndyStrToInt(Copy(s, i+1, iPosSlash-i-1));
+              if i <> iPrev then
+                _GIdPorts.Add( Pointer(i) );
+              iPrev := i;
+            end;
+        end;
+    finally
+      sl.Free;
+    end;
+  end;
+  Result := _GIdPorts;
+end;
+
 procedure TfrmMain.PopulateIPAddresses;
 var
-  i : integer;
+  i: integer;
 begin
 // Again this section should not change
   with lbIPs do
@@ -144,8 +205,8 @@ begin
   try
     cbPorts.Items.Add(RSBindingAny);
     cbPorts.Items.BeginUpdate;
-    for i := 0 to IdPorts.Count - 1 do
-      cbPorts.Items.Add(PortDescription(Integer(IdPorts[i])));
+    for i := 0 to GetPorts.Count - 1 do
+      cbPorts.Items.Add(PortDescription(Integer(GetPorts[i])));
   finally
     cbPorts.Items.EndUpdate;
   end;

@@ -1,0 +1,141 @@
+object frmMain: TfrmMain
+  Left = 387
+  Height = 296
+  Top = 214
+  Width = 342
+  Caption = 'Indy Base Server'
+  ClientHeight = 296
+  ClientWidth = 342
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -11
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poDesktopCenter
+  LCLVersion = '3.6.0.0'
+  object pnlButtonBar: TPanel
+    Left = 0
+    Height = 41
+    Top = 255
+    Width = 342
+    Align = alBottom
+    BevelOuter = bvLowered
+    ClientHeight = 41
+    ClientWidth = 342
+    ParentBackground = False
+    TabOrder = 0
+    object btnStartStop: TButton
+      Left = 264
+      Height = 25
+      Top = 8
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'Start Server'
+      TabOrder = 0
+      OnClick = btnStartStopClick
+    end
+  end
+  object pcMain: TPageControl
+    Left = 0
+    Height = 193
+    Top = 0
+    Width = 342
+    ActivePage = tsSettings
+    Align = alTop
+    TabIndex = 0
+    TabOrder = 1
+    object tsSettings: TTabSheet
+      Caption = 'Settings'
+      ClientHeight = 167
+      ClientWidth = 334
+      object Label2: TLabel
+        Left = 4
+        Height = 13
+        Top = 8
+        Width = 54
+        Caption = 'Bind to IPs'
+      end
+      object Label3: TLabel
+        Left = 120
+        Height = 13
+        Top = 8
+        Width = 62
+        Caption = 'Bind to port'
+      end
+      object Label4: TLabel
+        Left = 120
+        Height = 13
+        Top = 48
+        Width = 129
+        Caption = 'Select port from stack list'
+      end
+      object lbIPs: TCheckListBox
+        Left = 4
+        Height = 107
+        Top = 24
+        Width = 109
+        Anchors = [akTop, akLeft, akBottom]
+        ItemHeight = 0
+        TabOrder = 0
+      end
+      object cbPorts: TComboBox
+        Left = 120
+        Height = 21
+        Top = 64
+        Width = 145
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 1
+      end
+      object edPort: TEdit
+        Left = 120
+        Height = 21
+        Top = 24
+        Width = 65
+        TabOrder = 2
+        Text = '8800'
+        OnKeyPress = edPortKeyPress
+      end
+    end
+    object tsProcessLog: TTabSheet
+      Caption = 'Process Log'
+      ClientHeight = 167
+      ClientWidth = 334
+      ImageIndex = 1
+      object lbProcesses: TListBox
+        Left = 0
+        Height = 167
+        Top = 0
+        Width = 334
+        Align = alClient
+        ItemHeight = 13
+        Style = lbOwnerDrawFixed
+        TabOrder = 0
+        OnDrawItem = lbProcessesDrawItem
+      end
+    end
+  end
+  object Server: TIdTCPServer
+    OnStatus = ServerStatus
+    Bindings = <>
+    DefaultPort = 8800
+    ListenQueue = 50
+    MaxConnections = 100
+    OnConnect = ServerConnect
+    OnDisconnect = ServerDisconnect
+    OnException = ServerException
+    Scheduler = IdSchedulerOfThreadDefault1
+    OnExecute = ServerExecute
+    Top = 200
+  end
+  object IdAntiFreeze1: TIdAntiFreeze
+    Left = 32
+    Top = 200
+  end
+  object IdSchedulerOfThreadDefault1: TIdSchedulerOfThreadDefault
+    MaxThreads = 100
+    Left = 64
+    Top = 200
+  end
+end
