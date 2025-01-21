@@ -47,7 +47,7 @@
     <SearchPaths>
       <IncludeFiles Value="Forms;$(ProjOutDir)"/>
       <OtherUnitFiles Value="Forms"/>
-      <UnitOutputDirectory Value="bin\"/>
+      <UnitOutputDirectory Value="bin"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
