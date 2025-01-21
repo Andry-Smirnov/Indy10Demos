@@ -101,11 +101,6 @@ begin
           try
             FClient.Connect;
           except
-            //on E: EIdSocketError do
-              begin
-                FreeOnTerminate := True;
-                Terminate;
-              end;
           end;
           FLastTick := GetTickCount64;
         end
