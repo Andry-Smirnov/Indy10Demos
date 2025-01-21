@@ -68,15 +68,15 @@ type
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
-    lbIPs: TCheckListBox;
-    cbPorts: TComboBox;
-    edPort: TEdit;
+    IPsListBox: TCheckListBox;
+    PortsComboBox: TComboBox;
+    PortEdit: TEdit;
     tsProcessLog: TTabSheet;
     ProcessesListBox: TListBox;
-    btnStartStop: TButton;
+    StartStopButton: TButton;
     IdAntiFreeze1: TIdAntiFreeze;
     IdSchedulerOfThreadDefault1: TIdSchedulerOfThreadDefault;
-    procedure btnStartStopClick(Sender: TObject);
+    procedure StartStopButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ProcessesListBoxDrawItem(Control: TWinControl; Index: Integer; Rect: TRect; State: TOwnerDrawState);
@@ -86,13 +86,13 @@ type
     procedure ServerExecute(AContext: TIdContext);
     procedure ServerConnect(AContext: TIdContext);
     procedure ServerDisconnect(AContext: TIdContext);
-    procedure edPortKeyPress(Sender: TObject; var Key: char);
+    procedure PortEditKeyPress(Sender: TObject; var Key: char);
   private
     { Private declarations }
-    function CheckStartOk: boolean;
+    function CheckStartOk: Boolean;
 
-    function StartServer: boolean;
-    function StopServer: boolean;
+    function StartServer: Boolean;
+    function StopServer: Boolean;
 
     procedure PopulateIPAddresses;
     function PortDescription(const PortNumber: Integer): string;
@@ -101,19 +101,19 @@ type
     procedure SaveDefaultValues;
 
     procedure CheckOptions;
-    function GetServerOnline: boolean;
+    function GetServerOnline: Boolean;
 
-    function InternalServerBeforeStart: boolean;
+    function InternalServerBeforeStart: Boolean;
     procedure InternalServerAfterStart;
 
-    function InternalServerBeforeStop: boolean;
+    function InternalServerBeforeStop: Boolean;
     procedure InternalServerAfterStop;
 
     procedure Log(Msg: string; AColor: TColor = clBlack);
     procedure SetControls;
   public
     { Public declarations }
-    property ServerOnline: boolean read GetServerOnline;
+    property ServerOnline: Boolean read GetServerOnline;
   end;
 
 var
@@ -129,7 +129,7 @@ var
   _GIdPorts: TIdPortList = nil;
 
 
-procedure TfrmMain.btnStartStopClick(Sender: TObject);
+procedure TfrmMain.StartStopButtonClick(Sender: TObject);
 begin
   // This procedure should never change.
   if ServerOnline then
@@ -138,15 +138,15 @@ begin
     StartServer;
 end;
 
-function TfrmMain.CheckStartOk: boolean;
+function TfrmMain.CheckStartOk: Boolean;
 var
   i, c: Integer;
 begin
   // This section should stay the same, add your new code below
   i := 0;
-  for c := 0 to lbIPs.Items.Count - 1 do
+  for c := 0 to IPsListBox.Items.Count - 1 do
   begin
-    if lbIPs.Checked[c] then
+    if IPsListBox.Checked[c] then
       Inc(i);
   end;
   Result := i > 0;
@@ -217,45 +217,56 @@ var
   i: Integer;
 begin
   // Again this section should not change
-  with lbIPs do
-  begin
-    Clear;
-    Items := GStack.LocalAddresses;
-    Items.Insert(0, '127.0.0.1');
-  end;
+  with IPsListBox do
+    begin
+      Clear;
+      Items := GStack.LocalAddresses;
+      Items.Insert(0, '127.0.0.1');
+    end;
   try
-    cbPorts.Items.Add(RSBindingAny);
-    cbPorts.Items.BeginUpdate;
+    PortsComboBox.Items.Add(RSBindingAny);
+    PortsComboBox.Items.BeginUpdate;
     for i := 0 to GetPorts.Count - 1 do
-      cbPorts.Items.Add(PortDescription(Integer(GetPorts[i])));
+      PortsComboBox.Items.Add(PortDescription(Integer(GetPorts[i])));
   finally
-    cbPorts.Items.EndUpdate;
+    PortsComboBox.Items.EndUpdate;
   end;
 end;
 
 function TfrmMain.PortDescription(const PortNumber: Integer): string;
+var
+  StrList: TStringList;
 begin
   // Guess what more code that shouldn't change
-  with TIdStackWindows(GStack).WSGetServByPort(PortNumber) do
-  try
-    if PortNumber = 0 then
-    begin
-      Result := Format('%d: %s', [PortNumber, RSBindingAny]);
-    end
-    else
-    begin
-      Result := '';    {Do not Localize}
-      if Count > 0 then
-      begin
-        Result := Format('%d: %s', [PortNumber, CommaText]);    {Do not Localize}
-      end;
+  StrList := TStringList.Create;
+{$IFDEF WINDOWS}
+  TIdStackWindows(GStack).AddServByPortToList(PortNumber, StrList);
+  with StrList do
+  // method WSGetServByPort deprecated
+  //with TIdStackWindows(GStack).WSGetServByPort(PortNumber) do
+{$ELSE}
+  {$STOP Only for Windows }
+{$ENDIF}
+    try
+      if PortNumber = 0 then
+        begin
+          Result := Format('%d: %s', [PortNumber, RSBindingAny]);
+        end
+      else
+        begin
+          Result := '';    {Do not Localize}
+          if Count > 0 then
+            begin
+              Result := Format('%d: %s', [PortNumber, CommaText]);    {Do not Localize}
+            end;
+        end;
+    finally
+      //Free;
+      StrList.Free;
     end;
-  finally
-    Free;
-  end;
 end;
 
-function TfrmMain.StartServer: boolean;
+function TfrmMain.StartServer: Boolean;
 var
   Binding: TIdSocketHandle;
   i: Integer;
@@ -267,43 +278,44 @@ begin
   // and InternalServerAfterStart accordingly.
   Result := False;
   if not CheckStartOk then
-    exit;
+    Exit;
 
   SL := TStringList.Create;
 
   if not StopServer then
-  begin
-    Log('Error stopping server', clRed);
-    Result := False;
-    exit;
-  end;
+    begin
+      Log('Error stopping server', clRed);
+      Result := False;
+      Exit;
+    end;
 
-  Server.Bindings.Clear; // bindings cannot be cleared until TServer is inactive
+  // bindings cannot be cleared until TServer is inactive
+  Server.Bindings.Clear;
   try
     try
-      Server.DefaultPort := StrToInt(edPort.Text);
-      for i := 0 to lbIPs.Items.Count - 1 do
-        if lbIPs.Checked[i] then
-        begin
-          Binding := Server.Bindings.Add;
-          Binding.IP := lbIPs.Items.Strings[i];
-          Binding.Port := StrToInt(edPort.Text);
-          Log('Server bound to IP ' + Binding.IP + ' on port ' + edPort.Text);
-        end;
+      Server.DefaultPort := StrToInt(PortEdit.Text);
+      for i := 0 to IPsListBox.Items.Count - 1 do
+        if IPsListBox.Checked[i] then
+          begin
+            Binding := Server.Bindings.Add;
+            Binding.IP := IPsListBox.Items.Strings[i];
+            Binding.Port := StrToInt(PortEdit.Text);
+            Log('Server bound to IP ' + Binding.IP + ' on port ' + PortEdit.Text);
+          end;
 
       if InternalServerBeforeStart then
-      begin
-        Server.Active := True;
-        Result := Server.Active;
-
-        InternalServerAfterStart;
-        if ServerOnline then
         begin
-          Log('Server started', clGreen);
-          btnStartStop.Caption := 'Stop Server';
-          SetControls;
+          Server.Active := True;
+          Result := Server.Active;
+
+          InternalServerAfterStart;
+          if ServerOnline then
+            begin
+              Log('Server started', clGreen);
+              StartStopButton.Caption := 'Stop Server';
+              SetControls;
+            end;
         end;
-      end;
     except
       on E: Exception do
       begin
@@ -317,9 +329,9 @@ begin
   end;
 end;
 
-function TfrmMain.StopServer: boolean;
+function TfrmMain.StopServer: Boolean;
 var
-  b: boolean;
+  b: Boolean;
 begin
   // This code stops the server and posts back information about
   // the server shutting down.
@@ -331,25 +343,25 @@ begin
   b := Server.Active;
 
   if InternalServerBeforeStop then
-  begin
-    Server.Active := False;
-    Server.Bindings.Clear;
-    Result := not Server.Active;
-
-    if Result then
     begin
-      if b then
-        Log('Server stopped', clGreen);
+      Server.Active := False;
+      Server.Bindings.Clear;
+      Result := not Server.Active;
+
+      if Result then
+        begin
+          if b then
+            Log('Server stopped', clGreen);
+        end
+      else
+        begin
+          Log('Server not stopped', clRed);
+        end;
+
+      InternalServerAfterStop;
+      StartStopButton.Caption := 'Start Server';
+      SetControls;
     end
-    else
-    begin
-      Log('Server not stopped', clRed);
-    end;
-
-    InternalServerAfterStop;
-    btnStartStop.Caption := 'Start Server';
-    SetControls;
-  end
   else
     Log('Server not stopped', clRed);
 end;
@@ -386,14 +398,14 @@ begin
   // This is were you get the chance to load values from the global
   // Ini file.  The section for ports and IP's has been added in here
   // for you by default.
-  edPort.Text := Ini.ReadString('Settings', 'Port', edPort.Text);
+  PortEdit.Text := Ini.ReadString('Settings', 'Port', PortEdit.Text);
   c := Ini.ReadInteger('Settings', 'IPs', 0);
   for i := 1 to c do
-  begin
-    s := Ini.ReadString('Settings', 'IP' + IntToStr(i), '');
-    if lbIPs.Items.IndexOf(s) > -1 then
-      lbIPs.Checked[lbIPs.Items.IndexOf(s)] := True;
-  end;
+    begin
+      s := Ini.ReadString('Settings', 'IP' + IntToStr(i), '');
+      if IPsListBox.Items.IndexOf(s) > -1 then
+        IPsListBox.Checked[IPsListBox.Items.IndexOf(s)] := True;
+    end;
 end;
 
 procedure TfrmMain.SaveDefaultValues;
@@ -404,13 +416,13 @@ begin
   // This is were you get the chance to save values to the global
   // Ini file.  The section for ports and IP's has been added in here
   // for you by default.
-  Ini.WriteString('Settings', 'Port', edPort.Text);
+  Ini.WriteString('Settings', 'Port', PortEdit.Text);
   c := 0;
-  for i := 0 to lbIPs.Items.Count - 1 do
-    if lbIPs.Checked[i] then
+  for i := 0 to IPsListBox.Items.Count - 1 do
+    if IPsListBox.Checked[i] then
     begin
       Inc(c);
-      Ini.WriteString('Settings', 'IP' + IntToStr(c), lbIPs.Items[i]);
+      Ini.WriteString('Settings', 'IP' + IntToStr(c), IPsListBox.Items[i]);
     end;
   Ini.WriteInteger('Settings', 'IPs', c);
   Ini.WriteInteger('Placement', 'Top', Top);
@@ -421,7 +433,7 @@ procedure TfrmMain.CheckOptions;
 var
   i: Integer;
   opt: string;
-  bDoAutoStart: boolean;
+  bDoAutoStart: Boolean;
 
   function OptName: string;
   begin
@@ -453,7 +465,7 @@ begin
     opt := LowerCase(ParamStr(i));
 
     if OptName = 'port' then
-      edPort.Text := OptValue;
+      PortEdit.Text := OptValue;
 
     if OptName = 'autostart' then
       bDoAutoStart := True;
@@ -463,7 +475,7 @@ begin
     StartServer;
 end;
 
-function TfrmMain.GetServerOnline: boolean;
+function TfrmMain.GetServerOnline: Boolean;
 begin
   // Just a faster way then checking server.active for some
   Result := Server.Active;
@@ -502,10 +514,10 @@ begin
   Log(AException.Message, clRed);
 end;
 
-function TfrmMain.InternalServerBeforeStart: boolean;
+function TfrmMain.InternalServerBeforeStart: Boolean;
 begin
   // Preform your startup code here.  If you do not wish the server to start
-  // then simply return false from this function and report back the proper
+  // then simply return False from this function and report back the proper
   // error by calling Log(YourMessage, clRed);
   Result := True;
 end;
@@ -524,7 +536,7 @@ begin
   // or for a force start call Server.Active := true;
 end;
 
-function TfrmMain.InternalServerBeforeStop: boolean;
+function TfrmMain.InternalServerBeforeStop: Boolean;
 begin
   // Preform your shutdown code here.  If you do not wish the server to stop
   // then simply return false from this function and report back the proper
@@ -536,9 +548,9 @@ procedure TfrmMain.SetControls;
 begin
   // Sets up the UI controls to either be enabled or disabled based upon
   // the current server state.  See below for examples.
-  lbIPs.Enabled := not ServerOnline;
-  edPort.Enabled := not ServerOnline;
-  cbPorts.Enabled := not ServerOnline;
+  IPsListBox.Enabled := not ServerOnline;
+  PortEdit.Enabled := not ServerOnline;
+  PortsComboBox.Enabled := not ServerOnline;
 end;
 
 procedure TfrmMain.FormActivate(Sender: TObject);
@@ -563,7 +575,7 @@ begin
   Log('Client connection removed from ip: ' + AContext.Connection.Socket.Host, clBlue);
 end;
 
-procedure TfrmMain.edPortKeyPress(Sender: TObject; var Key: char);
+procedure TfrmMain.PortEditKeyPress(Sender: TObject; var Key: char);
 begin
   if not (Key in ['0', '1'..'9', #8]) then
     Key := #0;
