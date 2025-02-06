@@ -356,7 +356,7 @@ begin
   begin
     Canvas.Brush.Color := Color;
 
-    Canvas.FillRect(Rect); 
+    Canvas.FillRect(Rect);
     Canvas.Font.Color := TColor(Items.Objects[Index]);
     Canvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index]);
   end;
