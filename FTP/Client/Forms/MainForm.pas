@@ -32,7 +32,7 @@ unit MainForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Types, Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, StdCtrls, ComCtrls, ToolWin, IdBaseComponent, IdComponent,
   IdTCPConnection, IdTCPClient, IdExplicitTLSClientServerBase, IdFTP,
   Buttons, ExtCtrls, Commctrl, ActnList, ShellAPI, IniFiles, FTPSiteInfo,
@@ -503,11 +503,9 @@ end;
 
 procedure TfrmMain.lbDirectoryKeyPress(Sender: TObject; var Key: Char);
 begin
-  case Key of
-    #13:
-      actDownloadFile.Execute;
-    #8:
-      actBack.Execute;
+  case Ord(Key) of
+    VK_RETURN: actDownloadFile.Execute;
+    VK_BACK:   actBack.Execute;
   end;
 end;
 
