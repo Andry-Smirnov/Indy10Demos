@@ -482,7 +482,7 @@ begin
      end;
      if not havePassword then
      begin
-{ TODO : Passwort - Dialog einfügen }
+{ TODO : Passwort - Dialog einfï¿½gen }
      end;
      DialUp;
      Result := Connected;
@@ -500,7 +500,7 @@ begin
      if rasIndex >= 0 then
      begin
         ThisRas := RasObjectList.Items[RasIndex];
-        DisPose(ThisRas);  
+        DisPose(ThisRas);
         RasObjectlist.Delete(RasIndex);
      end;
 end;

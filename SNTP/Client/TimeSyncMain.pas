@@ -166,7 +166,7 @@ begin
   ComboBoxSNTPHost.Items.LoadFromFile('SNTPHost.txt');
   
   if ComboBoxSNTPHost.Items.Count <> 0 then
-    ComboBoxSNTPHost.ItemIndex := 0;  
+    ComboBoxSNTPHost.ItemIndex := 0;
 end;
 
 end.

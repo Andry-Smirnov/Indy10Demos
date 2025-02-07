@@ -85,7 +85,7 @@ type
     procedure OpenSSLGetPassword(
       var Password: String);
     procedure cbMaskPassClick(Sender: TObject);
-    procedure ServerQuerySSLPort(APort: Word; var VUseSSL: Boolean);    
+    procedure ServerQuerySSLPort(APort: Word; var VUseSSL: Boolean);
   private
     { Private declarations }
     function CheckStartOk : Boolean;
