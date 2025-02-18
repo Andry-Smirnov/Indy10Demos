@@ -87,7 +87,7 @@ begin
         if bRet = False then begin
             ShowMessage('Failed to retrieve folder names!');
         end;
-        for i := 0 to UsersFolders.Count-1 do begin
+        for i := 0 to UsersFolders.Count - 1 do begin
             ListBox1.Items.Add(UsersFolders[i]);
         end;
         Button1.Caption := 'Disconnect';
@@ -144,7 +144,7 @@ begin
             ShowMessage('There are no messages in '+MailBoxName);
         end else begin
             StringGrid1.RowCount := nCount + 1;
-            for i := 0 to nCount-1 do begin
+            for i := 0 to nCount - 1 do begin
                 TheImap.GetUID(i+1, TheUID);
                 TheImap.UIDRetrieveFlags(TheUID, TheFlags);
                 TheImap.UIDRetrieveHeader(TheUID, TheMsg);

@@ -8,7 +8,7 @@ unit Pop3MainUnit;
  of sending and receiving mails.
 
   (c)2005
-  Jörg Meier (Bob)
+  Jï¿½rg Meier (Bob)
   briefe@jmeiersoftware.de
 }
 interface
@@ -57,9 +57,9 @@ Uses MBoxDataModule, ProviderUnit;
 procedure TPop3Main.WndProc(var Message: tMessage);
 Var       MyString : PChar;
 begin
-     If Message.Msg = LogMessageNo then
+     if Message.Msg = LogMessageNo then
      begin
-          Case Message.WParam of
+          case Message.WParam of
           LogString  : begin
                             MyString := PChar(Message.LParam);
                             Memo1.Lines.Add(String(MyString));
@@ -79,7 +79,7 @@ end;
 procedure TPop3Main.StartBtnClick(Sender: TObject);
 begin
      Memo1.Clear;
-     StopBtn.Enabled  := True;
+     StopBtn.Enabled := True;
      StartBtn.Enabled := False;
 
      MBoxDataMod.RunServer; // Local servers
@@ -89,7 +89,7 @@ end;
 
 procedure TPop3Main.StopBtnClick(Sender: TObject);
 begin
-     StopBtn.Enabled  := False;
+     StopBtn.Enabled := False;
      StartBtn.Enabled := True;
      MBoxDataMod.StopServer;
 end;
@@ -116,9 +116,9 @@ begin
         MBoxDataMod.GetSendMail;
      Except
            // ignore all Errors
-     End;
+     end;
      CheckTimer.Interval := 60*1000*StrToInt(ProviderForm.CheckMailTime.Text);
-     CheckTimer.Enabled  := True;
+     CheckTimer.Enabled := True;
 end;
 
 procedure TPop3Main.GetSendBtnClick(Sender: TObject);

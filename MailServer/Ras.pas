@@ -327,7 +327,7 @@ Procedure Register;
 implementation
 
 Procedure Register;
-Begin
+begin
      Registercomponents('Tests',[TRasConnection]);
 end;
 
@@ -339,7 +339,7 @@ var     RasObjectList : tlist;
 {************************************************************}
 Function FindRasIndex(Handle:tHRasConn):Integer;
 var      I    : Integer;
-Begin
+begin
      for I := 0 to RasObjectList.Count -1 do
      begin
           if tRasIdentifier(RasObjectList[I]).rasHandle = Handle then
@@ -352,39 +352,39 @@ Begin
 end;
 
 Constructor tRasConnection.Create(AOwner : tComponent);
-Begin
+begin
      inherited create(AOwner);
-     fHandle    := 0;
-     fOwner     := AOwner;
+     fHandle  := 0;
+     fOwner   := AOwner;
      fConnected := False;
-     fTimer     := tTimer.Create(nil);
-     fReady     := false;
-     fState     := -1;
-     fAborted   := false;
-     With fTimer do
+     fTimer   := tTimer.Create(nil);
+     fReady   := false;
+     fState   := -1;
+     fAborted := false;
+     with fTimer do
      begin
-          enabled  := false;
+          enabled := false;
           Interval := 30000;
-          onTimer  := TimeOut;
+          onTimer := TimeOut;
      end;
      RasObjectlist.Add(@self);
 end;
 
 Destructor tRasConnection.Destroy;
-Begin
+begin
      if connected then RasHangup(Handle);
      fTimer.free;
      inherited destroy;
 end;
 
 Procedure tRasConnection.SetState(Value:Integer);
-Begin
-     If fState <> Value then
+begin
+     if fState <> Value then
      begin
           fState := Value;
-          If Value = RASCS_DONE then
+          if Value = RASCS_DONE then
           begin
-             fReady     := true;
+             fReady   := true;
              fConnected := true;
              fTimer.Enabled := false;
           end;
@@ -394,8 +394,8 @@ Begin
 end;
 
 Procedure tRasConnection.SetConnected(Value:Boolean);
-Begin
-     If fConnected <> Value then
+begin
+     if fConnected <> Value then
      begin
           fAborted := False;
           if Value then
@@ -420,7 +420,7 @@ begin
      if I < 0 then exit;
      RasObj := tRasIdentifier(RasObjectList[I]).rasObject;
      with RasObj do begin
-          If ActError = 0 then
+          if ActError = 0 then
           begin
                State := NewState;
           end
@@ -429,7 +429,7 @@ begin
                fError := ActError;
                fErrMsg := RasGetErrorString(ActError);
                AbortDial;
-               If Assigned(OnError) then
+               if Assigned(OnError) then
                   OnError(RasObj,ErrMsg);
           end;
      end;
@@ -439,16 +439,16 @@ Procedure tRasConnection.DialUp;
 { Dial with given DialParams }
 var                 thisRas     : tRasIdentifier;
                     R           : Integer;
-Begin
-     fError    := 0;
+begin
+     fError  := 0;
      Connected := false;   { Hangup any pending connection }
      fHandle := 0;
-     R := RasDial(nil,nil,fDialParams,1,@MyDialFunc1,fHandle);
-     If R <> 0 then begin
+     R := RasDial(nil,nil,fDialParams, 1,@MyDialFunc1,fHandle);
+     if R <> 0 then begin
         Raise Exception.create('Verbindungsfehler : '+ErrMsg);
      end;
      fTimer.Enabled := True;
-     If fHandle <= 0 then exit;
+     if fHandle <= 0 then exit;
      new(thisRas);
      thisRas.rasHandle := fhandle;
      thisRas.RasObject := Self;
@@ -467,8 +467,8 @@ var       HavePassWord : bool;
           R            : Integer;
 begin
      Result := False;
-     fReady  := False;
-     Fillchar(fDialParams,SizeOf(fDialParams),0);
+     fReady := False;
+     Fillchar(fDialParams,SizeOf(fDialParams), 0);
      fDialParams.dwSize := SizeOf(fDialParams);
      for I := 1 to length(Ras) do
          fDialParams.szEntryName[Pred(I)] := Ras[I];
@@ -492,10 +492,10 @@ Procedure tRasConnection.Hangup;
 var       RasIndex    : Integer;
           thisRas     : tRasIdentifier;
 begin
-     fConnected     := False;
+     fConnected   := False;
      fTimer.Enabled := false;
      RasHangup(Handle);
-     If Handle = 0 then Exit;
+     if Handle = 0 then Exit;
      RasIndex := FindRasIndex(Handle);
      if rasIndex >= 0 then
      begin
@@ -508,8 +508,8 @@ end;
 Procedure tRasConnection.AbortDial;
 begin
      Hangup;
-     fAborted       := True;
-     fReady         := True;
+     fAborted := True;
+     fReady  := True;
 end;
 
 Procedure tRasConnection.TimeOut(Sender : tObject);
@@ -529,7 +529,7 @@ Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must be NIL
                    var  lpcb           : integer;	 // size in bytes of buffer
                    var  lpcEntries     : integer	         // number of entries written to buffer
                         ) : Integer;
-Begin
+begin
         Result := RasEnumEntriesA(Reserved,szPhonebook,@lpRasEntryName^[0],@lpcb,@lpcEntries);
 end;
 
@@ -540,15 +540,15 @@ function RasDial(RasDialExtensions: PRASDIALEXTENSIONS;
                   Notifier      : Pointer;
             var   RasConn       : tHRASCONN
                  ): DWORD;
-Begin
-     RasDial := RasDialA(RasDialExtensions,Phonebook,@RasDialParams,NotifierType,
+begin
+     RasDial := RasDialA(RasDialExtensions, Phonebook,@RasDialParams,NotifierType,
                          Notifier,@RasConn);
 end;
 
 function RasHangup(RasConn: THRASCONN): DWORD;
 Var      RASConnStatus : TRasConnStatus;
          Status        : Integer;
-Begin
+begin
      FillChar(RasConnStatus, SizeOf(RasConnStatus), 0);
      RasConnStatus.dwSize := SizeOf(RasConnStatus);
      {Status := }RasGetConnectStatusA(RasConn, @RasConnStatus);
@@ -571,11 +571,11 @@ end;
 function RasGetErrorString(
                   uErrorValue   : DWORD // error to get string for
                  ): String;
-Begin
-     SetLength(Result,256);
-     If RasGetErrorStringA(uErrorValue,PChar(Result),256) <> 0 then
+begin
+     SetLength(Result, 256);
+     if RasGetErrorStringA(uErrorValue, PChar(Result), 256) <> 0 then
         Result := '';
-     SetLength(Result,Pos(#0,Result));
+     SetLength(Result, Pos(#0,Result));
 end;
 
 function RasEditPhonebookEntry(
@@ -584,7 +584,7 @@ function RasEditPhonebookEntry(
                    EntryName : String  // pointer to the phonebook entry name
                  ) : DWORD;
 begin
-     Result := RasEditPhonebookEntryA(hWndParent,Pchar(Phonebook),PChar(Entryname));
+     Result := RasEditPhonebookEntryA(hWndParent, Pchar(Phonebook), PChar(Entryname));
 end;
 
 function RasCreatePhonebookEntry(
@@ -592,7 +592,7 @@ function RasCreatePhonebookEntry(
                      Phonebook  : String   // pointer to the full path and filename of the phonebook file
                    ) : DWORD;
 begin
-     Result := RasCreatePhonebookEntryA(HwndParent,PChar(Phonebook));
+     Result := RasCreatePhonebookEntryA(HwndParent, PChar(Phonebook));
 end;
 
 function RasEnumConnections(
@@ -665,10 +665,10 @@ var
     dwCount    : DWORD;
     RASpppIP   : TRASPPPIP;
 begin
-    Result          := '';
+    Result   := '';
     RASConns.dwSize := SizeOf(TRASConn);
     RASpppIP.dwSize := SizeOf(RASpppIP);
-    dwSize          := SizeOf(RASConns);
+    dwSize   := SizeOf(RASConns);
     if RASEnumConnectionsA(@RASConns, @dwSize, @dwCount) = 0 then begin
         if dwCount > 0 then begin
             dwSize := SizeOf(RASpppIP);

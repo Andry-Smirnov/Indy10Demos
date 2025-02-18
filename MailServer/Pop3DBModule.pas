@@ -9,7 +9,7 @@ unit Pop3DBModule;
   to have the data for the users stored in a convenient way.
 
   (c)2005
-  Jörg Meier (Bob)
+  Jï¿½rg Meier (Bob)
   briefe@jmeiersoftware.de
 }
 interface
@@ -80,13 +80,13 @@ function GetValidMailBoxName(const AUserName,APassword: String): String;
 Var      Nr     : Integer;
          This   : tUserObject;
 begin
-     With Pop3DBMod do
+     with Pop3DBMod do
      begin
           Result := ''; // assume failure
           Nr := fMailBoxList.IndexOf(AUserName);
-          If Nr < 0 then Exit; // User is unknown
+          if Nr < 0 then Exit; // User is unknown
           This := tUserObject(fMailBoxList.Objects[Nr]);
-          If This.PassWord = APassword then Result := This.MBoxName
+          if This.PassWord = APassword then Result := This.MBoxName
           Else                              Result := '';
      end;
 end;
@@ -97,12 +97,12 @@ Function GetMailBoxList:tStringList;
 }
 
 Var      ii    : Integer;
-Begin
+begin
      Result := tStringlist.Create;
      Result.Duplicates := DupIgnore;
-     With Pop3DBMod do
+     with Pop3DBMod do
      begin
-          for ii := 0 to fMailBoxList.Count-1 do
+          for ii := 0 to fMailBoxList.Count - 1 do
           begin
                Result.Add(tUserObject(fMailboxlist.Objects[ii]).MBoxName);
           end;
@@ -111,18 +111,18 @@ end;
 
 procedure TPop3DBMod.DataModuleCreate(Sender: TObject);
 begin
-     DBSection    := tIdCriticalSection.Create;
+     DBSection  := tIdCriticalSection.Create;
 
      fMailBoxList := tStringList.Create;
      fMailboxlist.Duplicates := DupError;
      fMailboxlist.Sorted := True;
 
-     fEmailAddrs  := tStringlist.Create;
+     fEmailAddrs := tStringlist.Create;
      fEmailAddrs.Duplicates := DupError;
      fEmailAddrs.Sorted := True;
 
      FillUserList;
-     fSendQueue    := tThreadList.Create;
+     fSendQueue  := tThreadList.Create;
 end;
 
 procedure TPop3DBMod.DataModuleDestroy(Sender: TObject);
@@ -130,7 +130,7 @@ Var       ii    : Integer;
           MyUsr : tUserObject;
 begin
      // Clear MailBoxList
-     For ii := 0 to fMailBoxList.Count-1 do
+     For ii := 0 to fMailBoxList.Count - 1 do
      begin
           MyUsr := tUserObject(fMailBoxList.Objects[ii]);
           FreeAndNil(MyUsr);
@@ -156,7 +156,7 @@ begin
      Result := True; // assume all goes well
      try
         ThisUser := tUserObject.Create(APassword,AMBoxName);
-        fMailBoxList.AddObject(AUserName,ThisUser);
+        fMailBoxList.AddObject(AUserName, ThisUser);
      Except
            Result := False;
      end;
@@ -168,9 +168,9 @@ begin
      Result := False; // Assume Error
      Try
         Nr := MailBoxList.IndexOf(AUserName);
-        If Nr < 0 then exit;  // Not found
+        if Nr < 0 then exit;  // Not found
 
-        EmailAddrs.AddObject(AEmailAddress,Pointer(Nr));
+        EmailAddrs.AddObject(AEmailAddress, Pointer(Nr));
         Result := True;   // Success;
      except
            Exit;
@@ -186,7 +186,7 @@ begin
      try
         DBSection.Enter;
 { first the user in the system }
-//      AddUser(AccountName,Password,Foldername);
+//      AddUser(AccountName, Password,Foldername);
         AddUser('Thats.MySelf','Top_Secret','MyMailBox');
 { then the external email-address and the Username (for delivering inbound mail)}
 //      AddEmail(Email-Address,Username)
@@ -208,17 +208,17 @@ begin
      Try
         FName := ExtractFilePath(Application.ExeName)+NumberFName;
         AssignFile(NumberFile,FName);
-        If FileExists(FName) Then
+        if FileExists(FName) Then
         begin
              Reset(NumberFile);
              Read(NumberFile,Result);
              Inc(Result);
-             Seek(NumberFile,0);
+             Seek(NumberFile, 0);
         end
         else begin
              Rewrite(NumberFile);
              Result := 1; // Start with one
-        End;
+        end;
         Write(NumberFile,Result);
      Finally
             CloseFile(NumberFile);
@@ -262,7 +262,7 @@ Var      Nr  : Integer;
 begin
      Result := '';
      Nr := MailBoxList.IndexOf(AUser);
-     If Nr < 0 then exit; // Not found, could rise an Exception as well
+     if Nr < 0 then exit; // Not found, could rise an Exception as well
      Result := tUserObject(MailBoxList.Objects[Nr]).MBoxName;
 end;
 

@@ -87,8 +87,8 @@ begin
   LoadIniSettings;
   
   CurrentConnections := 0;
-  ConnectionsMade    := 0;
-  MaxConnections     := 0;
+  ConnectionsMade  := 0;
+  MaxConnections   := 0;
 
   lblConCons.Caption := 'Current Concurrent Connections: 0';
   lblMaxCons.Caption := 'Max Concurrent Connections: 0';
@@ -144,8 +144,8 @@ begin
   lvStatus.Items.Clear;
 
   CurrentConnections := 0;
-  ConnectionsMade    := 0;
-  MaxConnections     := 0;
+  ConnectionsMade  := 0;
+  MaxConnections   := 0;
 
   lblConCons.Caption := 'Current Concurrent Connections: 0';
   lblMaxCons.Caption := 'Max Concurrent Connections: 0';
@@ -256,8 +256,8 @@ end;
 
 procedure TfrmMain.LoadIniSettings;
 begin
-  edHost.Text    := Ini.ReadString('Connection', 'Host', edHost.Text);
-  edPort.Text    := Ini.ReadString('Connection', 'Port', edPort.Text);
+  edHost.Text  := Ini.ReadString('Connection', 'Host', edHost.Text);
+  edPort.Text  := Ini.ReadString('Connection', 'Port', edPort.Text);
   edThreads.Text := Ini.ReadString('Threads', 'Threads', edThreads.Text);
 end;
 

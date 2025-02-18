@@ -47,7 +47,7 @@ implementation
 
 procedure TPop3Form.Pop3ServerListBuildString(Sender: TObject; var S: String);
 begin
-     With MaildModule do
+     with MaildModule do
           S := Pop3TableServer.Value + ' <' + Pop3TableAccount.Value + '>';
 end;
 

@@ -111,7 +111,7 @@ Try
  LStream.CopyFrom(AMsg, 0);
 Finally
  FreeAndNil(LStream);
-End;
+end;
 
 LMsg := TIdMessage.Create;
 Try
@@ -122,7 +122,7 @@ Try
  Memo1.Lines := LMsg.Body;
 Finally
  FreeAndNil(LMsg);
-End;
+end;
 
 end;
 

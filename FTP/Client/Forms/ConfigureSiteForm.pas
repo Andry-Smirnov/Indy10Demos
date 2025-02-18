@@ -81,7 +81,7 @@ begin
       SI := SiteList.IndexOf(SiteList.New);
       with SiteList[SI] do
         begin
-          Name    := frmMain.cbFTPAddress.Text;
+          Name  := frmMain.cbFTPAddress.Text;
           Address := frmMain.cbFTPAddress.Text;
           UserName:= frmMain.edUserName.Text;
           Password:= frmMain.edPassword.Text;
@@ -97,20 +97,20 @@ begin
   with TfrmConfigureSite.Create(Application) do
     begin
       try
-        edAddress.Text     := SiteList[SI].Address;
+        edAddress.Text   := SiteList[SI].Address;
         edDisplayName.Text := SiteList[SI].Name;
-        edUserName.Text    := SiteList[SI].UserName;
-        edPassword.Text    := SiteList[SI].Password;
-        edRootFolder.Text  := SiteList[SI].RootDir;
-        btnDelete.Enabled  := not bCreated;
+        edUserName.Text  := SiteList[SI].UserName;
+        edPassword.Text  := SiteList[SI].Password;
+        edRootFolder.Text := SiteList[SI].RootDir;
+        btnDelete.Enabled := not bCreated;
         
         case ShowModal of
           mrOk : begin
-                   SiteList[SI].Address  := edAddress.Text;
-                   SiteList[SI].Name     := edDisplayName.Text;
+                   SiteList[SI].Address := edAddress.Text;
+                   SiteList[SI].Name   := edDisplayName.Text;
                    SiteList[SI].UserName := edUserName.Text;
                    SiteList[SI].Password := edPassword.Text;
-                   SiteList[SI].RootDir  := edRootFolder.Text;
+                   SiteList[SI].RootDir := edRootFolder.Text;
 
                    result := true;
                  end;
@@ -137,7 +137,7 @@ end;
 procedure TfrmConfigureSite.FormResize(Sender: TObject);
 begin
   btnDelete.Left := (width - btnOk.Width - btnCancel.Width - 15 - btnDelete.Width) div 2;
-  btnOk.Left     := btnDelete.Width + btnDelete.Left + 5;
+  btnOk.Left   := btnDelete.Width + btnDelete.Left + 5;
   btnCancel.Left := btnOk.Left + 5 + btnOk.Width;
 end;
 

@@ -90,7 +90,7 @@ begin
     FContext := AContext;
     AContext.Connection.IOHandler.CheckForDisconnect(True, True);
     I := AContext.Connection.IOHandler.Buffer.Size;
-    If I >= 1 then
+    if I >= 1 then
       begin
         Swp := Copy(FCurMsg.Text, 1, Length(FCurMsg.Text) -2);
         SetLength(S, I);
@@ -111,7 +111,7 @@ constructor TChatContextData.Create;
 begin
   inherited;
   FCurMsg := TStringList.Create;
-  FLock   := TCriticalSection.Create;
+  FLock := TCriticalSection.Create;
 end;
 
 destructor TChatContextData.Destroy;

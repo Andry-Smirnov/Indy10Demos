@@ -301,7 +301,7 @@ begin
 // need to be changed.
   Ini := TIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
   pcMain.ActivePageIndex := 0;
-  pcMain.Align  := alClient;
+  pcMain.Align := alClient;
   PopulateIPAddresses;
   StopServer;
   LoadDefaultValues;
@@ -310,7 +310,7 @@ end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
-// If you created anything in form create or in one of the other
+// if you created anything in form create or in one of the other
 // initialization routines then get rid of it here.
   StopServer;
   SaveDefaultValues;
@@ -335,11 +335,11 @@ begin
     end;
   edServerRoot.Text := Ini.ReadString('Settings', 'ServerRoot', ExtractFilePath(ParamStr(0)) + 'Docs');
 
-  edCertFile.Text     := Ini.ReadString('SSLSettings', 'CertFile', '');
-  edCipherList.Text   := Ini.ReadString('SSLSettings', 'CipherList', '');
-  edKeyFile.Text      := Ini.ReadString('SSLSettings', 'KeyFile', '');
+  edCertFile.Text   := Ini.ReadString('SSLSettings', 'CertFile', '');
+  edCipherList.Text := Ini.ReadString('SSLSettings', 'CipherList', '');
+  edKeyFile.Text := Ini.ReadString('SSLSettings', 'KeyFile', '');
   edRootCertFile.Text := Ini.ReadString('SSLSettings', 'RootCertFile', '');
-  edPassword.Text     := Ini.ReadString('SSLSettings', 'Password', '');
+  edPassword.Text   := Ini.ReadString('SSLSettings', 'Password', '');
 end;
 
 procedure TfrmMain.SaveDefaultValues;
@@ -465,16 +465,16 @@ end;
 
 function TfrmMain.InternalServerBeforeStart: Boolean;
 begin
-  // Perform your startup code here.  If you do not wish the server to start
+  // Perform your startup code here.  if you do not wish the server to start
   // then simply return false from this function and report back the proper
   // error by calling Log(YourMessage, clRed);
   result := true;
   try
     with OpenSSL.SSLOptions do
       begin
-        CertFile     := edCertFile.Text;
-        CipherList   := edCipherList.Text;
-        KeyFile      := edKeyFile.Text;
+        CertFile   := edCertFile.Text;
+        CipherList := edCipherList.Text;
+        KeyFile := edKeyFile.Text;
         RootCertFile := edRootCertFile.Text;
       end;
   except
@@ -508,8 +508,8 @@ procedure TfrmMain.SetControls;
 begin
 // Sets up the UI controls to either be enabled or disabled based upon
 // the current server state.  See below for examples.
-  lbIPs.Enabled   := not ServerOnline;
-  edPort.Enabled  := not ServerOnline;
+  lbIPs.Enabled := not ServerOnline;
+  edPort.Enabled := not ServerOnline;
   cbPorts.Enabled := not ServerOnline;
 end;
 

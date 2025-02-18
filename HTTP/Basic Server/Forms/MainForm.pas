@@ -285,7 +285,7 @@ begin
 // need to be changed.
   Ini := TIniFile.Create(ChangeFileExt(ParamStr(0), '.ini'));
   pcMain.ActivePageIndex := 0;
-  pcMain.Align  := alClient;
+  pcMain.Align := alClient;
   PopulateIPAddresses;
   StopServer;
   LoadDefaultValues;
@@ -294,7 +294,7 @@ end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
-// If you created anything in form create or in one of the other
+// if you created anything in form create or in one of the other
 // initialization routines then get rid of it here.
   StopServer;
   SaveDefaultValues;
@@ -462,8 +462,8 @@ procedure TfrmMain.SetControls;
 begin
 // Sets up the UI controls to either be enabled or disabled based upon
 // the current server state.  See below for examples.
-  lbIPs.Enabled   := not ServerOnline;
-  edPort.Enabled  := not ServerOnline;
+  lbIPs.Enabled := not ServerOnline;
+  edPort.Enabled := not ServerOnline;
   cbPorts.Enabled := not ServerOnline;
 end;
 
