@@ -168,7 +168,7 @@ type
     function  ListMailBox               (ALoginName, AMailBoxName: string; var AMailBoxNames: TStringList; var AMailBoxFlags: TStringList): Boolean;
     function  DeleteMessage             (ALoginName, AMailbox: string; AMessage: TIdMessage): Boolean;
     function  CopyMessage               (ALoginName, ASourceMailBox, AMessageUID, ADestinationMailbox: string): Boolean;
-    function  GetMessageSize            (ALoginName, AMailbox: string; AMessage: TIdMessage): integer;
+    function  GetMessageSize            (ALoginName, AMailbox: string; AMessage: TIdMessage): Integer;
     function  GetMessageHeader          (ALoginName, AMailbox: string; AMessage, ATargetMessage: TIdMessage): Boolean;
     function  GetMessageRaw             (ALoginName, AMailbox: string; AMessage: TIdMessage; ALines: TStringList): Boolean;
     function  OpenMailBox               (ASender: TIdCommand; AReadOnly: Boolean): Boolean;
@@ -204,24 +204,24 @@ uses
 procedure TIdIMAP4ServerDemo.InitComponent;
 begin
   inherited;
-  OnDefMechDoesImapMailBoxExist             := DoesImapMailBoxExist;
-  OnDefMechCreateMailBox                    := CreateMailBox;
-  OnDefMechDeleteMailBox                    := DeleteMailBox;
-  OnDefMechIsMailBoxOpen                    := IsMailBoxOpen;
-  OnDefMechSetupMailbox                     := SetupMailbox;
-  OnDefMechNameAndMailBoxToPath             := NameAndMailBoxToPath;
-  OnDefMechGetNextFreeUID                   := GetNextFreeUID;
-  OnDefMechRenameMailBox                    := RenameMailBox;
-  OnDefMechListMailBox                      := ListMailBox;
-  OnDefMechDeleteMessage                    := DeleteMessage;
-  OnDefMechCopyMessage                      := CopyMessage;
-  OnDefMechGetMessageSize                   := GetMessageSize;
-  OnDefMechGetMessageHeader                 := GetMessageHeader;
-  OnDefMechGetMessageRaw                    := GetMessageRaw;
-  OnDefMechOpenMailBox                      := OpenMailBox;
-  OnDefMechReinterpretParamAsMailBox        := ReinterpretParamAsMailBox;
-  OnDefMechUpdateNextFreeUID                := UpdateNextFreeUID;
-  OnDefMechGetFileNameToWriteAppendMessage  := GetFileNameToWriteAppendMessage;
+  OnDefMechDoesImapMailBoxExist         := DoesImapMailBoxExist;
+  OnDefMechCreateMailBox                := CreateMailBox;
+  OnDefMechDeleteMailBox                := DeleteMailBox;
+  OnDefMechIsMailBoxOpen                := IsMailBoxOpen;
+  OnDefMechSetupMailbox                 := SetupMailbox;
+  OnDefMechNameAndMailBoxToPath         := NameAndMailBoxToPath;
+  OnDefMechGetNextFreeUID               := GetNextFreeUID;
+  OnDefMechRenameMailBox                := RenameMailBox;
+  OnDefMechListMailBox                  := ListMailBox;
+  OnDefMechDeleteMessage                := DeleteMessage;
+  OnDefMechCopyMessage                  := CopyMessage;
+  OnDefMechGetMessageSize               := GetMessageSize;
+  OnDefMechGetMessageHeader             := GetMessageHeader;
+  OnDefMechGetMessageRaw                := GetMessageRaw;
+  OnDefMechOpenMailBox                  := OpenMailBox;
+  OnDefMechReinterpretParamAsMailBox    := ReinterpretParamAsMailBox;
+  OnDefMechUpdateNextFreeUID            := UpdateNextFreeUID;
+  OnDefMechGetFileNameToWriteAppendMessage := GetFileNameToWriteAppendMessage;
 end;
 
 function TIdIMAP4ServerDemo.AddUser(ALoginName: string): Boolean;
@@ -275,7 +275,7 @@ end;
 
 procedure TIdIMAP4ServerDemo.RecursivelyEmptyDir(ADir: string);
 var
-  LRet: integer;
+  LRet: Integer;
   LSrchRec: TSearchRec;
 begin
   //Empty the dir first...
@@ -328,7 +328,7 @@ end;
 function  TIdIMAP4ServerDemo.DeleteMailBox(ALoginName, AMailbox: string): Boolean;
 var
   LDir: string;
-  LRet: integer;
+  LRet: Integer;
   LSrchRec: TSearchRec;
 begin
   Result := False;
@@ -378,7 +378,7 @@ function TIdIMAP4ServerDemo.NameAndMailBoxToPath(ALoginName, AMailbox: string): 
 //if AMailbox is '', we are really only checking if the user's dir exists...
 var
   LDir: string;
-  LN: integer;
+  LN: Integer;
   LMailBox: string;
 begin
   LDir := FRootPath;
@@ -443,18 +443,18 @@ begin
   LSourceFile := NameAndMailBoxToPath(ALoginName, ASourceMailBox) + PathDelim + AMessageUID + '.txt';  {Do not Localize}
   //We need the next free UID in the destination dir...
   LNewUID := GetNextFreeUID(ALoginName, ADestinationMailBox);
-  LDestFile   := NameAndMailBoxToPath(ALoginName, ADestinationMailBox) + PathDelim + LNewUID + '.txt';  {Do not Localize}
+  LDestFile := NameAndMailBoxToPath(ALoginName, ADestinationMailBox) + PathDelim + LNewUID + '.txt';  {Do not Localize}
   if IndyCopyFile(LSourceFile, LDestFile, True) = False then begin
     Exit;
   end;
-  Result := UpdateNextFreeUID(ALoginName, ADestinationMailBox, IntToStr(StrToInt(LNewUID)+1));
+  Result := UpdateNextFreeUID(ALoginName, ADestinationMailBox, IntToStr(StrToInt(LNewUID) + 1));
 end;
 
-function  TIdIMAP4ServerDemo.GetMessageSize(ALoginName, AMailbox: string; AMessage: TIdMessage): integer;
+function  TIdIMAP4ServerDemo.GetMessageSize(ALoginName, AMailbox: string; AMessage: TIdMessage): Integer;
 //Return message size, or -1 on error.
 var
   LFile: string;
-  LRet: integer;
+  LRet: Integer;
   LSrchRec: TSearchRec;
 begin
   LFile := NameAndMailBoxToPath(ALoginName, AMailbox) + PathDelim + AMessage.UID + '.txt';  {Do not Localize}
@@ -496,7 +496,7 @@ function  TIdIMAP4ServerDemo.LoadMailBox(ALoginName, AMailBoxName: string; AMail
 //Because it does not really support \Seen (which would require disk storage of
 //the flags across sessions), it ALWAYS sets the \Seen flag.
 var
-  LRet: integer;
+  LRet: Integer;
   LSrchRec: TSearchRec;
   LDir: string;
   LMsgItem : TIdMessageItem;
@@ -531,7 +531,7 @@ end;
 function TIdIMAP4ServerDemo.GetMailBoxes(ADir, AMailBoxName: string; var AMailBoxNames: TStringList; var AMailBoxFlags: TStringList): Boolean;
 //Return True if this MailBox has SubMailBoxes
 var
-  LRet: integer;
+  LRet: Integer;
   LSrchRec: TSearchRec;
   LTemp: string;
   LDoesMailBoxHaveSubMailBoxes: Boolean;
@@ -567,7 +567,7 @@ end;
 function  TIdIMAP4ServerDemo.GetNextFreeUID(ALoginName, AMailbox: string): string;
 var
   LLargestUIDInUse: Integer;
-  LRet: integer;
+  LRet: Integer;
   LSrchRec: TSearchRec;
   LDir: string;
   LName: string;
@@ -600,7 +600,7 @@ end;
 
 function  TIdIMAP4ServerDemo.UpdateNextFreeUID(ALoginName, AMailBoxName, ANewUIDNext: string): Boolean;
 var
-  LRet: integer;
+  LRet: Integer;
   LSrchRec: TSearchRec;
   LDir: string;
 begin

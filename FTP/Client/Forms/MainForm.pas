@@ -183,19 +183,19 @@ begin
   actConnectDisconnect.Hint := actConnectDisconnect.Caption;
   
   actConnectDisconnect.Checked := FTP.Connected;
-  btnGo.Enabled         := FTP.Connected;
+  btnGo.Enabled := FTP.Connected;
   actChangeDirUP.Enabled := FTP.Connected;
-  actBack.Enabled       := FTP.Connected and (FLastDirStack.Count > 0);
-  actHome.Enabled       := FTP.Connected;
+  actBack.Enabled := FTP.Connected and (FLastDirStack.Count > 0);
+  actHome.Enabled := FTP.Connected;
   actCreateFolder.Enabled := FTP.Connected;
   actDeleteFileFolder.Enabled := FTP.Connected;
   actUploadFile.Enabled := FTP.Connected;
   actDownloadFile.Enabled := FTP.Connected;
-  actConfigureSite.Enabled   := (not FTP.Connected) and (cbFTPAddress.Text <> '');
-  edFolder.Enabled      := FTP.Connected;
-  cbFTPAddress.Enabled  := not FTP.Connected;
-  edUserName.Enabled    := not FTP.Connected;
-  edPassword.Enabled    := not FTP.Connected;
+  actConfigureSite.Enabled := (not FTP.Connected) and (cbFTPAddress.Text <> '');
+  edFolder.Enabled := FTP.Connected;
+  cbFTPAddress.Enabled := not FTP.Connected;
+  edUserName.Enabled := not FTP.Connected;
+  edPassword.Enabled := not FTP.Connected;
   actConnectDisconnect.Enabled := (cbFTPAddress.Text <> '');
 end;
 
@@ -229,11 +229,11 @@ begin
   sbMain.Perform(SB_GETRECT, 1, Integer(@R));
 
   pbProgress.Parent := sbMain;
-  pbProgress.Top  := r.Top;
+  pbProgress.Top := r.Top;
   pbProgress.Left := r.Left;
   pbProgress.Width := r.Right - r.Left;
   pbProgress.Height := r.Bottom - r.Top;
-  pbProgress.Visible:= false;
+  pbProgress.Visible:= False;
 end;
 
 procedure TfrmMain.FTPStatus(ASender: TObject; const AStatus: TIdStatus;
@@ -319,7 +319,7 @@ begin
 
   FLastDirStack := TStringList.Create;
   edFolder.Text := '/';
-  lbDirectory.Visible := false;
+  lbDirectory.Visible := False;
   SetControls;
   actHelp.Enabled := FileExists(HelpFile);
 end;
@@ -367,13 +367,13 @@ procedure TfrmMain.FTPWorkBegin(Sender: TObject; AWorkMode: TWorkMode;
 begin
   pbProgress.Max := AWorkCountMax;
   pbProgress.Position := 0;
-  pbProgress.Visible := true;
+  pbProgress.Visible := True;
   Log('Work begin ' + IntToStr(AWorkCountMax), clPurple);
 end;
 
 procedure TfrmMain.FTPWorkEnd(Sender: TObject; AWorkMode: TWorkMode);
 begin
-  pbProgress.Visible := false;
+  pbProgress.Visible := False;
   Log('Work end', clPurple);
 end;
 
@@ -402,7 +402,7 @@ var
   i : Integer;
   ext,
   s : String;
-  b : boolean;
+  b : Boolean;
 begin
   if lvFiles.Focused then
     begin
@@ -435,7 +435,7 @@ begin
           SaveFile.FileName := s;
           if SaveFile.Execute then
             begin
-              b := true;
+              b := True;
               if FileExists(SaveFile.FileName) then
                 if MessageDlg('File exists overwrite?', mtWarning, [mbYes, mbNo], 0) = mrYes then
                   DeleteFile(SaveFile.FileName);
@@ -568,7 +568,7 @@ begin
     begin
       site := TFTPSiteInfo.Create;
       s := 'Site' + IntToStr(i) + '.';
-      site.Name   := Ini.ReadString('SITES', s + 'Name', '');
+      site.Name := Ini.ReadString('SITES', s + 'Name', '');
       site.Address := Ini.ReadString('SITES', s + 'Address', '');
       site.UserName := Ini.ReadString('SITES', s + 'UserName', '');
       site.Password := Ini.ReadString('SITES', s + 'Password', '');
@@ -645,7 +645,7 @@ begin
       edPassword.Text := TFTPSiteInfo(cbFTPAddress.Items.Objects[i]).Password;
     end;
 
-  actConfigureSite.Enabled   := (cbFTPAddress.Text <> '');
+  actConfigureSite.Enabled := (cbFTPAddress.Text <> '');
   actConnectDisconnect.Enabled := (cbFTPAddress.Text <> '');
 end;
 
@@ -653,14 +653,14 @@ procedure TfrmMain.InitLogColors;
 begin
   with ApplicationConfig.LogColors do
     begin
-      Colors['Default']  := clBlack;
-      Colors['hsStatusText']  := clBlack;
-      Colors['hsResolving']   := clBlack;
-      Colors['hsConnecting']  := clBlack;
+      Colors['Default'] := clBlack;
+      Colors['hsStatusText'] := clBlack;
+      Colors['hsResolving'] := clBlack;
+      Colors['hsConnecting'] := clBlack;
       Colors['hsDisconnecting'] := clBlack;
-      Colors['hsConnected']   := clBlue;
+      Colors['hsConnected'] := clBlue;
       Colors['hsDisconnected'] := clBlue;
-      Colors['ftpTransfer']   := clBlue;
+      Colors['ftpTransfer'] := clBlue;
       Colors['ftpReady'] := clGreen;
       Colors['ftpAborted'] := clRed;
     end;
@@ -668,7 +668,7 @@ end;
 
 procedure TfrmMain.BinaryNottext1Click(Sender: TObject);
 begin
-  TMenuItem(Sender).Checked := true;
+  TMenuItem(Sender).Checked := True;
 end;
 
 end.

@@ -72,7 +72,7 @@ begin
             FOnUserNameSet(Self, UN);
           UserName := UN;
           msg := 'Welcome ' + UN + #13#10;
-          Context.Connection.IOHandler.WriteBuffer(msg[1], length(msg));
+          Context.Connection.IOHandler.WriteBuffer(msg[1], Length(msg));
         end
       else
         if Assigned(FOnMsgAvail) then

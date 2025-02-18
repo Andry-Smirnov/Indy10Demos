@@ -39,7 +39,7 @@ type
   private
     List : TList;
     function GetCount: Integer;
-    function GetSites(index: integer): TFTPSiteInfo;
+    function GetSites(index: Integer): TFTPSiteInfo;
   public
     property Sites[index:integer] : TFTPSiteInfo read GetSites; default;
     property Count : Integer read GetCount;
@@ -92,7 +92,7 @@ begin
   Result := List.Count;
 end;
 
-function TFTPSiteList.GetSites(index: integer): TFTPSiteInfo;
+function TFTPSiteList.GetSites(index: Integer): TFTPSiteInfo;
 begin
   Result := List[index];
 end;

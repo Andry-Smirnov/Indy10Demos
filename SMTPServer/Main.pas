@@ -85,14 +85,14 @@ procedure TForm1.btnServerOnClick(Sender: TObject);
 begin
  btnServerOn.Enabled := False;
  btnServerOff.Enabled := True;
- IdSMTPServer1.active := true;
+ IdSMTPServer1.active := True;
 end;
 
 procedure TForm1.btnServerOffClick(Sender: TObject);
 begin
  btnServerOn.Enabled := True;
  btnServerOff.Enabled := False;
- IdSMTPServer1.active := false;
+ IdSMTPServer1.active := False;
 end;
 
 procedure TForm1.IdSMTPServer1MsgReceive(ASender: TIdSMTPServerContext;

@@ -90,15 +90,15 @@ end;
 
 procedure TfrmMain.ClientConnect(Sender: TObject);
 begin
-  edPort.Enabled := false;
-  edHost.Enabled := false;
+  edPort.Enabled := False;
+  edHost.Enabled := False;
   btnConnect.Caption := 'Disconnect';
 end;
 
 procedure TfrmMain.ClientDisconnect(Sender: TObject);
 begin
-  edPort.Enabled := true;
-  edHost.Enabled := true;
+  edPort.Enabled := True;
+  edHost.Enabled := True;
   btnConnect.Caption := 'Connect';
 end;
 
@@ -130,7 +130,7 @@ end;
 
 procedure TfrmMain.Timer1Timer(Sender: TObject);
 var
-  i : integer;
+  i : Integer;
   s : String;
 begin
   if not Client.Connected then

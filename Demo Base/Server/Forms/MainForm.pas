@@ -439,9 +439,9 @@ var
   begin
     if pos('=', opt) > 0 then
     begin
-      Result := copy(opt, 1, pos('=', opt) - 1);
+      Result := copy(opt, 1, Pos('=', opt) - 1);
       if Result[1] in ['-', '/', '\'] then
-        Result := copy(Result, 2, length(Result));
+        Result := copy(Result, 2, Length(Result));
     end
     else
       Result := opt;
@@ -450,7 +450,7 @@ var
   function OptValue: string;
   begin
     if pos('=', opt) > 0 then
-      Result := copy(opt, pos('=', opt) + 1, length(opt))
+      Result := copy(opt, Pos('=', opt) + 1, Length(opt))
     else
       Result := opt;
   end;
@@ -526,14 +526,14 @@ procedure TfrmMain.InternalServerAfterStart;
 begin
   // Your code should go here.  At this point the server is active.
   // So if you need to stop it then you should call StopServer
-  // or for a hard halt call Server.Active := false;
+  // or for a hard halt call Server.Active := False;
 end;
 
 procedure TfrmMain.InternalServerAfterStop;
 begin
   // Your code should go here.  At this point the server has been stoped.
   // So if you need to start it then you should call StartServer
-  // or for a force start call Server.Active := true;
+  // or for a force start call Server.Active := True;
 end;
 
 function TfrmMain.InternalServerBeforeStop: Boolean;

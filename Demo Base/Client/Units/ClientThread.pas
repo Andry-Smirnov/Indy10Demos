@@ -37,8 +37,8 @@ type
     FState: Integer;
     FStatusText: string;
     procedure SetListItem(const Value: TListItem);
-    procedure SetSleepTime(const Value: integer);
-    procedure SetState(const Value: integer);
+    procedure SetSleepTime(const Value: Integer);
+    procedure SetState(const Value: Integer);
     procedure SetStatusText(const Value: string);
     //
     procedure SetListItemSubItems0;
@@ -130,12 +130,12 @@ begin
   FListItem := Value;
 end;
 
-procedure TClientThread.SetSleepTime(const Value: integer);
+procedure TClientThread.SetSleepTime(const Value: Integer);
 begin
   FSleepTime := Value;
 end;
 
-procedure TClientThread.SetState(const Value: integer);
+procedure TClientThread.SetState(const Value: Integer);
 begin
   FState := Value;
   case Value of

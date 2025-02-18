@@ -55,7 +55,7 @@ type
     { Private-Deklarationen }
   public
     { Public-Deklarationen }
-    Function  GetProviderList:tStringList;
+    Function  GetProviderList: TStringList;
     Procedure LoadValues;
     Procedure SaveValues;
   end;
@@ -75,7 +75,7 @@ Var       I         : Integer;
           Nr        : Integer;
           R         : Integer;
 begin
-     Result      := tStringList.Create;
+     Result  := tStringList.Create;
      Result.Sorted := True;
      Result.Duplicates := dupIgnore;
      Nr := 0;
@@ -83,19 +83,19 @@ begin
      GetMem(Bf,Sz);
      Bf^[0].dwSize := Sz;
      ASz := Sz;
-     R := RasEnumEntries(nil,nil,Bf,ASz,NR);
+     R := RasEnumEntries(nil, nil, bf, ASz, NR);
      if (R <> 0) and (ASz > 0) then begin
         FreeMem(Bf,Sz);
-        GetMem(Bf,ASz);
+        GetMem(Bf, ASz);
         Bf^[0].dwSize := Sz;
-        RasEnumEntries(nil,nil,Bf,ASz,NR);
+        RasEnumEntries(nil, nil, bf, ASz, NR);
      end;
    {$R-}
      For I := 0 to Nr-1 do begin
          Result.Add(String(Bf^[I].SzEntryName));
      end;
    {$R+}
-     freemem(Bf,ASz);
+     freemem(Bf, ASz);
 end;
 
 procedure TProviderForm.LanChkClick(Sender: TObject);
@@ -105,7 +105,7 @@ begin
 end;
 
 procedure TProviderForm.FormShow(Sender: TObject);
-Var       Sl   : tStringList;
+Var       Sl  : TStringList;
 begin
      // Fill Combobox with Providers
      Sl := GetProviderList;
@@ -121,21 +121,21 @@ begin
      Fn := ChangeFileExt(Application.ExeName,'.INI');
      Ini := tIniFile.Create(Fn);
      Try
-        LanChk.Checked := Ini.ReadBool('Connection','LanChk', True);
-        PhoneList.Text := Ini.ReadString('Connection','PhoneList','');
+        LanChk.Checked := Ini.ReadBool('Connection', 'LanChk', True);
+        PhoneList.Text := Ini.ReadString('Connection', 'PhoneList', '');
 
-        DelMail.Checked   := Ini.ReadBool('Pop3','DelMail', True);
-        Pop3Name.Text := Ini.ReadString('Pop3','Pop3Name','pop3.gmx.us');
-        Pop3Port.Text := Ini.ReadString('Pop3','Pop3Port','110');
-        Pop3Accnt.Text := Ini.ReadString('Pop3','Pop3Accnt','Unknown.User@gmx.us');
-        Pop3PWd.Text := Ini.ReadString('Pop3','Pop3PWd','Top Secret');
+        DelMail.Checked := Ini.ReadBool('Pop3', 'DelMail', True);
+        Pop3Name.Text := Ini.ReadString('Pop3', 'Pop3Name', 'pop3.gmx.us');
+        Pop3Port.Text := Ini.ReadString('Pop3', 'Pop3Port', '110');
+        Pop3Accnt.Text := Ini.ReadString('Pop3', 'Pop3Accnt', 'Unknown.User@gmx.us');
+        Pop3PWd.Text := Ini.ReadString('Pop3', 'Pop3PWd', 'Top Secret');
 
-        SMTPLogin.Checked := Ini.ReadBool('SMTP','SMTPLogin', True);
-        SMTPName.Text := Ini.ReadString('SMTP','SMTPName','smtp.gmx.us');
-        SMTPPort.Text := Ini.ReadString('SMTP','SMTPPort','25');
-        SMTPAccnt.Text := Ini.ReadString('SMTP','SMTPAccnt','Unknown.User@gmx.us');
-        SMTPPWd.Text := Ini.ReadString('SMTP','SMTPPWd','Top Secret');
-        CheckMailTime.Text := Ini.ReadString('Mailer','CheckMailTime','10');
+        SMTPLogin.Checked := Ini.ReadBool('SMTP', 'SMTPLogin', True);
+        SMTPName.Text := Ini.ReadString('SMTP', 'SMTPName', 'smtp.gmx.us');
+        SMTPPort.Text := Ini.ReadString('SMTP', 'SMTPPort', '25');
+        SMTPAccnt.Text := Ini.ReadString('SMTP', 'SMTPAccnt', 'Unknown.User@gmx.us');
+        SMTPPWd.Text := Ini.ReadString('SMTP', 'SMTPPWd', 'Top Secret');
+        CheckMailTime.Text := Ini.ReadString('Mailer', 'CheckMailTime', '10');
      finally
             Ini.Free;
      end;
@@ -147,32 +147,32 @@ Var       Ini : tIniFile;
 begin
      Fn := ChangeFileExt(Application.ExeName,'.INI');
      Ini := tIniFile.Create(Fn);
-     Ini.WriteBool('Connection','LanChk',LanChk.Checked);
-     Ini.WriteString('Connection','PhoneList', PhoneList.Text);
+     Ini.WriteBool('Connection', 'LanChk', lanChk.Checked);
+     Ini.WriteString('Connection', 'PhoneList', PhoneList.Text);
 
-     Ini.WriteString('Pop3','Pop3Name', Pop3Name.Text);
+     Ini.WriteString('Pop3', 'Pop3Name', Pop3Name.Text);
      try
-        Ini.WriteInteger('Pop3','Pop3Port',StrToInt(Pop3Port.Text));
+        Ini.WriteInteger('Pop3', 'Pop3Port', StrToInt(Pop3Port.Text));
      except
-        Ini.WriteInteger('Pop3','Pop3Port', 110);
+        Ini.WriteInteger('Pop3', 'Pop3Port', 110);
      end;
-     Ini.WriteString('Pop3','Pop3Accnt', Pop3Accnt.Text);
-     Ini.WriteString('Pop3','Pop3PWd', Pop3PWd.Text);
-     Ini.WriteBool('Pop3','DelMail',DelMail.Checked);
+     Ini.WriteString('Pop3', 'Pop3Accnt', Pop3Accnt.Text);
+     Ini.WriteString('Pop3', 'Pop3PWd', Pop3PWd.Text);
+     Ini.WriteBool('Pop3', 'DelMail', DelMail.Checked);
 
-     Ini.WriteBool('SMTP','SMTPLogin',SMTPLogin.Checked);
-     Ini.WriteString('SMTP','SMTPName',SMTPName.Text);
+     Ini.WriteBool('SMTP', 'SMTPLogin', SMTPLogin.Checked);
+     Ini.WriteString('SMTP', 'SMTPName', SMTPName.Text);
      try
-        Ini.WriteInteger('SMTP','SMTPPort',StrToInt(SMTPPort.Text));
+        Ini.WriteInteger('SMTP', 'SMTPPort', StrToInt(SMTPPort.Text));
      except
-        Ini.WriteInteger('SMTP','SMTPPort', 25);
+        Ini.WriteInteger('SMTP', 'SMTPPort', 25);
      end;
-     Ini.WriteString('SMTP','SMTPAccnt',SMTPAccnt.Text);
-     Ini.WriteString('SMTP','SMTPPWd',SMTPPWd.Text);
+     Ini.WriteString('SMTP', 'SMTPAccnt', SMTPAccnt.Text);
+     Ini.WriteString('SMTP', 'SMTPPWd', SMTPPWd.Text);
      Try
-        Ini.WriteInteger('Mailer','CheckMailTime',StrToInt(CheckMailTime.Text));
+        Ini.WriteInteger('Mailer', 'CheckMailTime', StrToInt(CheckMailTime.Text));
      Except
-           Ini.WriteInteger('Mailer','CheckMailTime', 10);
+           Ini.WriteInteger('Mailer', 'CheckMailTime', 10);
      end;
      Ini.Free;
 end;

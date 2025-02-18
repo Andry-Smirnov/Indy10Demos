@@ -126,22 +126,22 @@ type
   private
     { Private-Deklarationen }
     fMBoxRoot      : String;
-    fMailIDs       : tStringList; // list of downloaded mails not deleted on Server
+    fMailIDs      : TStringList; // list of downloaded mails not deleted on Server
     fDoHangup      : Boolean; // for dial-up connections
     fNewConnection : Boolean; // ditto
     RasConn        : tRasConnection;
     Procedure InitMailBoxes;
-    Procedure DebugOutput(Const Command:String;ASender:tIDCommand);
+    Procedure DebugOutput(const Command: String;ASender:tIDCommand);
   public
     { Public-Deklarationen }
     Procedure RunServer;
     Procedure StopServer;
     Procedure SetupExternals;
     Procedure GetSendMail;
-    Function  GoOnline(Const Provider:String):Boolean;
+    Function  GoOnline(const Provider: String): Boolean;
     Property  MBoxRoot : String read FMBoxRoot;
     Procedure GetMailInfos(var MailList:tstringList);
-    Procedure GetAllMail(MailList:tStringList;Const MBoxName:String='');
+    Procedure GetAllMail(MailList: TStringList; const MBoxName: String='');
     Procedure SendAllMail;
     Property  MailIDs:tstringlist read fMailIDs;
   end;
@@ -154,11 +154,11 @@ Uses FileCtrl, Pop3DBModule, SyncObjs, Pop3MainUnit, ProviderUnit;
 {$R *.DFM}
 
 Type  tUserData = Class(tObject)
-           MailList  : tStringList;
+           MailList : TStringList;
            UsrName   : String;
            MBoxPath  : String;
            MBoxSize  : Integer;
-           Constructor Create(Const AUsrName:String);
+           Constructor Create(const AUsrName: String);
            Destructor  Destroy;Override;
            Procedure FillMailList;
       end;
@@ -169,14 +169,14 @@ Type  tUserData = Class(tObject)
            DoSend       : Boolean;
            MailNumber   : Integer;
            MailSize     : Integer;
-           Constructor Create(Const AFileName:String);
+           Constructor Create(const AFileName: String);
            Destructor  Destroy;Override;
       end;
 
 // This object is used to specify the received mail from an Internet-Mailserver
       tServerMail = Class(tObject)
            Mailsentby   : String;    // From
-           MailSentto   : tStringList;    // To
+           MailSentto  : TStringList;    // To
            MailSubject  : String;    // Ref
            MailSize     : Integer;   // Bytes
            MsgID        : String;    // Unique MessageID (Set by the Mailserver)
@@ -194,7 +194,7 @@ Var   DBSection  : tCriticalSection;
 {*    (slightly modified to be used with Indy                            *}
 {*                                                                       *}
 {*************************************************************************}
-Type   FileFunction = Function(Const Filename:String):Boolean;
+Type   FileFunction = Function(const Filename: String): Boolean;
 
 function GetFileSize(const FileName: string): LongInt;
 var
@@ -220,7 +220,7 @@ begin
   SysUtils.FindClose(Searchrec);
 end;
 
-Function GetFilesInDirEX(InitDir:String;Var DirList : tStringList;Fnc:FileFunction;Const Pattern : String = '*.*'):Integer;
+Function GetFilesInDirEX(InitDir: String; var DirList: TStringList; Fnc: FileFunction; const Pattern : String = '*.*'): Integer;
 Var  R    : Integer;
      Sr   : tSearchrec;
 begin
@@ -245,12 +245,12 @@ begin
      SysUtils.FindClose(Sr);
 end;
 
-Function GetFilesInDir(InitDir:String;Var DirList : tStringList;Const Pattern : String = '*.*'):Integer;
+Function GetFilesInDir(InitDir: String; var DirList: TStringList; const Pattern : String = '*.*'): Integer;
 begin
-     Result := GetFilesInDirEx(InitDir,Dirlist,nil, Pattern);
+     Result := GetFilesInDirEx(InitDir,Dirlist, nil, Pattern);
 end;
 
-Function GetRawFileName(Const Root:String;MailInfo:tServerMail):String;
+Function GetRawFileName(const Root: String;MailInfo:tServerMail): String;
 Var      ii       : Integer;
          Nr       : Integer;
          MBEntry  : Integer;
@@ -332,7 +332,6 @@ Procedure DebugString(const S : String);
 Var  MyMessage  : PChar;
 begin
      MyMessage := StrNew(PChar(S));
-     PostMessage(POP3Main.Handle,LogMessageNo,LogString,Integer(MyMessage));
 end;
 
 Procedure DebugException;
@@ -357,7 +356,7 @@ begin
         fMBoxRoot := Sys.IncludeTrailingPathDelimiter(Sys.IncludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName)) +MBoxFolder);
         DBSection := tCriticalSection.Create;
         LogSection := tCriticalSection.Create;
-        fMailIDs  := tStringList.Create;
+        fMailIDs := tStringList.Create;
         fMailIDs.Sorted := True;
         fMailIDs.Duplicates := DupIgnore;
         if FileExists(ChangeFileExt(Application.ExeName,'.MList')) then
@@ -390,7 +389,7 @@ end;
    tRASConnection.
    You'll find it in the RAS-Module
 }
-Function  TMBoxDataMod.GoOnline(Const Provider:String):Boolean;
+Function  TMBoxDataMod.GoOnline(const Provider: String): Boolean;
 {
   Simply connect to internet - Server
   The connection was selected in the option-form.
@@ -407,12 +406,12 @@ Var       I             : Integer;
           Count         : Integer;
           Connected     : Boolean;
 begin
-     fDoHangup := false;
+     fDoHangup := False;
      fNewConnection := False;
-     I       := 0;
+     I   := 0;
      Connected := False;
      prvName := 'unknown';
-     Count   := RasCountConnections;
+     Count := RasCountConnections;
      if (Count = 0) and (Provider <> '') then
      begin
 //          Logmessage('connecting ...', 2);
@@ -422,7 +421,7 @@ begin
                 fNewConnection := True;
                 if connected then begin
                    prvName := Provider;
-                   fdoHangup := true;
+                   fdoHangup := True;
 //                       LogMessage('Connection with '+prvName + ' established.', 2);
                 end;
                 Inc(I);
@@ -438,7 +437,7 @@ begin
          else  {LogMessage('Used already established connection', 2)};
          fDoHangup := False;
          Count := 1;  //That's <> 0
-         Connected := true;
+         Connected := True;
      end;
 
      // if didn't work retry later
@@ -485,17 +484,17 @@ begin
              if Not MailData.DoDelete then
              begin
                   MailData.DoDelete := True;
-                  aCmd.Reply.SetReply(OK,Format(' - Message %d deleted',[AMsgNo]));
+                  aCmd.Reply.SetReply(OK, Format(' - Message %d deleted', [AMsgNo]));
                   Exit;
              end
              Else Reason := ' because Message %d IS already deleted.';
         end
         else Reason := ' because Messagenumber %d is out of range.';
         // We 're here when there was an error
-        aCmd.Reply.SetReply(ERR,Format(' -Message not deleted'+Reason,[AMsgNo]));
+        aCmd.Reply.SetReply(ERR, Format(' -Message not deleted'+Reason,[AMsgNo]));
      Finally
             aCmd.Response.Clear;
-            DebugOutput(Format('DELE %d',[AMsgNo]), aCmd);
+            DebugOutput(Format('DELE %d', [AMsgNo]), aCmd);
      end;
 end;
 
@@ -538,12 +537,12 @@ begin
              begin
                   TotSize := TotSize + MailData.MailSize;
                   Inc(Undeled);
-                  ASender{.CommandHandler}.Response.Add(Format('%d %d',[Succ(II),MailData.MailSize]));
+                  ASender{.CommandHandler}.Response.Add(Format('%d %d', [Succ(II), MailData.MailSize]));
              end;
         end;
-        ASender.Reply.SetReply(OK,Format('%d %d',[Undeled, TotSize]));
+        ASender.Reply.SetReply(OK, Format('%d %d', [Undeled, TotSize]));
      Finally
-            DebugOutput(Format('LIST %d',[AMessageNum]),ASender);
+            DebugOutput(Format('LIST %d', [AMessageNum]), ASender);
      end;
 end;
 
@@ -573,7 +572,7 @@ begin
         FreeAndNil(UserData);
         ASender.Context.Data := Nil;
      Finally
-            DebugOutput('QUIT',ASender);
+            DebugOutput('QUIT', ASender);
      end;
 
 end;
@@ -598,13 +597,13 @@ begin
         if (AMsgNO >= 1) and (AMsgNO <= USerData.MailList.Count) then
         begin
              MailData := tMailData(UserData.MailList.Objects[AMsgNO-1]);
-             aCmd.Reply.SetReply(OK,Format('%d octets',[MailData.MailSize]));
+             aCmd.Reply.SetReply(OK, Format('%d octets', [MailData.MailSize]));
              // Now populate aCmd.Response with the data to be returned.
              aCmd.Response.LoadFromFile(UserData.MailList[AMsgNO-1]);
         end
-        Else aCmd.Reply.SetReply(ERR,Format(' -Message %d Does not exist.',[AMsgNO]));
+        Else aCmd.Reply.SetReply(ERR, Format(' -Message %d Does not exist.', [AMsgNO]));
      Finally
-            DebugOutput(Format('RETR %d',[AMsgNO]), aCmd);
+            DebugOutput(Format('RETR %d', [AMsgNO]), aCmd);
      end;
 end;
 
@@ -628,13 +627,13 @@ begin
         if (AMessageNum >= 1) and (AMessageNum <= USerData.MailList.Count) then
         begin
              MailData := tMailData(UserData.MailList.Objects[AMessageNum-1]);
-             ASender.Reply.SetReply(OK,Format('%d octets',[MailData.MailSize]));
+             ASender.Reply.SetReply(OK, Format('%d octets', [MailData.MailSize]));
              // Now populate ASender.Response with the data to be returned.
              ASender.Response.LoadFromFile(UserData.MailList[AMessageNum-1]);
         end
-        Else ASender.Reply.SetReply(ERR,Format(' -Message %d Does not exist.',[AMessageNum]));
+        Else ASender.Reply.SetReply(ERR, Format(' -Message %d Does not exist.', [AMessageNum]));
      Finally
-            DebugOutput(Format('RETR %d',[AMessageNum]),ASender);
+            DebugOutput(Format('RETR %d', [AMessageNum]), ASender);
      end;
 end;
 
@@ -655,7 +654,7 @@ begin
              if MailData.DoDelete then MailData.DoDelete := False;
         end;
      Finally
-            DebugOutput('RSET',ASender);
+            DebugOutput('RSET', ASender);
      end;
 end;
 
@@ -700,22 +699,22 @@ begin
         if (AMessageNum >= 1) and (AMessageNum <= USerData.MailList.Count) then
         begin
              MailData := tMailData(UserData.MailList.Objects[AMessageNum-1]);
-             ASender.Reply.SetReply(OK,Format('%d octets',[MailData.MailSize]));
+             ASender.Reply.SetReply(OK, Format('%d octets', [MailData.MailSize]));
              AssignFile(F,UserData.MailList[AMessageNum-1]);
              Reset(F);
              For ii := 1 to ANumLines do
              begin
                   if EOF(F) then Exit;
-                  ReadLn(F,Line);
+                  ReadLn(F, Line);
 
                   // Now populate ASender.Response with the data to be returned.
                   ASender.Response.Add(Line);
              end;
         end
-        Else ASender.Reply.SetReply(ERR,Format(' -Message %d Does not exist.',[AMessageNum]));
+        Else ASender.Reply.SetReply(ERR, Format(' -Message %d Does not exist.', [AMessageNum]));
 (* *)
      Finally
-            DebugOutput(Format('TOP NR=%d Lns=%d',[AMessageNum,ANumLines]),ASender);
+            DebugOutput(Format('TOP NR=%d Lns=%d', [AMessageNum, ANumLines]), ASender);
      end;
 end;
 
@@ -730,7 +729,7 @@ Var    UserData  : tUserData;
        MyReply   : String;
        SingleLine  : Boolean;
 
-Function RemoveAngels(Const MsgString:String) : String;
+Function RemoveAngels(const MsgString: String) : String;
 Var       Nrs    : Integer;
 begin
      Result := MSGString;
@@ -764,7 +763,7 @@ begin
          end;
          if (AMessageNum = 0) or (AMessageNum > UserData.MailList.Count) then
          begin
-                  ASender.Reply.SetReply(ERR,Format('Message %d does not exist.',[UserData.MailList.Count]));
+                  ASender.Reply.SetReply(ERR, Format('Message %d does not exist.', [UserData.MailList.Count]));
                   Exit;
          end;
          For ii := Start to Stop do
@@ -773,24 +772,24 @@ begin
               if not MailData.DoDelete Then
               begin
                    InternalMessage.LoadFromFile(UserData.MailList[ii], True);
-                   MyReply := (Format('%d %s',[Succ(II),RemoveAngels(InternalMessage.MsgId)]));
-                   if not SingleLine then ASender.Response.Add(Format('%d %s',[Succ(II),MyReply]));
+                   MyReply := (Format('%d %s', [Succ(II),RemoveAngels(InternalMessage.MsgId)]));
+                   if not SingleLine then ASender.Response.Add(Format('%d %s', [Succ(II), MyReply]));
               end
               Else
               Begin
-                   if SingleLine then  ASender.Reply.SetReply(ERR,Format(' Message %d already deleted',[UserData.MailList.Count]));
+                   if SingleLine then  ASender.Reply.SetReply(ERR, Format(' Message %d already deleted', [UserData.MailList.Count]));
               end;
          end;
          if SingleLine then
          begin
-              ASender.Reply.SetReply(OK,MyReply);
+              ASender.Reply.SetReply(OK, MyReply);
          end
          else
          begin
          end;
       finally
              FreeAndNil(InternalMessage);
-             DebugOutput(Format('UIDL %d',[AMessageNum]),ASender);
+             DebugOutput(Format('UIDL %d', [AMessageNum]), ASender);
       end;
 end;
 
@@ -812,9 +811,9 @@ begin
         MBox := GetValidMailBoxName(aServerContext.Username, aServerContext.Password);
         if MBox <> '' Then
         begin
-//             LThread.Authenticated := true;
-//             LThread.State   := Trans;
-             UserData    := tUserData.Create(aServerContext.UserName);
+//             LThread.Authenticated := True;
+//             LThread.State := Trans;
+             UserData := tUserData.Create(aServerContext.UserName);
              UserData.MBoxPath := MBoxRoot+MBox;
              aContext.Data := UserData;
         end
@@ -847,8 +846,8 @@ end;
 {*************************************************************************}
 
 procedure TMBoxDataMod.InitMailBoxes;
-Var       BoxList : tStringList;
-          ii      : integer;
+Var       BoxList: TStringList;
+          ii      : Integer;
           Fn      : String;
 begin
      // Verify, that all mailboxes exist.
@@ -887,7 +886,7 @@ constructor tMailData.Create(const AFileName: String);
 begin
      Self.FName := AFilename;
      Self.DoDelete := False;
-     Self.DoSend   := False;
+     Self.DoSend := False;
      Self.MailSize := GetFileSize(FName);
      Self.MailNumber := 0;
 end;
@@ -907,7 +906,7 @@ end;
    The above applies to tUserData as well.
 }
 
-constructor tUserData.Create(const AUsrName:String);
+constructor tUserData.Create(const AUsrName: String);
 begin
      Inherited Create;
      Self.MailList := tStringList.Create;
@@ -935,7 +934,7 @@ procedure tUserData.FillMailList;
   mails into his(!) MailList
 }
 Var       MailData : tMailData;
-          FileList : tStringList;
+          FileList: TStringList;
           ii       : Integer;
           TotSize  : Integer;
 begin
@@ -943,12 +942,12 @@ begin
      FileList := tStringList.Create;
      TotSize := 0;
      try
-        GetFilesInDir(Self.MBoxPath,FileList,'*.Raw');
+        GetFilesInDir(Self.MBoxPath, FileList,'*.Raw');
         for ii := 0 to FileList.Count - 1 do
         begin
              MailData := tMailData.Create(FileList[ii]);
              MailData.MailNumber := ii;
-             Self.MailList.AddObject(FileList[ii],MailData);
+             Self.MailList.AddObject(FileList[ii], MailData);
              TotSize := TotSize + Integer(FileList.Objects[II]);
         end;
      finally
@@ -1102,11 +1101,11 @@ begin
 { we use the very same mechanism as in POP3Login to grant access for the user }
      DBSection.Enter;
      Try
-        MBox := GetValidMailBoxName(AUsername,APassword);
+        MBox := GetValidMailBoxName(AUsername, APassword);
         if MBox <> '' Then
         begin
-             VAuthenticated  := True;
-             UserData   := tUserData.Create(AUserName);
+             VAuthenticated := True;
+             UserData := tUserData.Create(AUserName);
              UserData.MBoxPath := MBoxRoot+MBox;
              ASender.Data := UserData;
              DebugString('SMTP: User '+AUserName+' logged in');
@@ -1217,9 +1216,9 @@ begin
      begin
           if Connected then Disconnect;
           if not SMTPLogin.Checked then AuthType := atNone;
-          Host   := SMTPName.Text;
+          Host := SMTPName.Text;
           PassWord := SMTPPWd.Text;
-          Port   := StrToInt(SMTPPort.Text);
+          Port := StrToInt(SMTPPort.Text);
           UserName := SMTPAccnt.Text;
      end;
 
@@ -1227,9 +1226,9 @@ begin
      begin
           if Connected then Disconnect;
           AuthType := atUserPass;
-          Host   := POP3Name.Text;
+          Host := POP3Name.Text;
           PassWord := POP3PWd.Text;
-          Port   := StrToInt(POP3Port.Text);
+          Port := StrToInt(POP3Port.Text);
           UserName := POP3Accnt.Text;
      end;
 end;
@@ -1257,7 +1256,7 @@ begin
           Header.Clear;
           MyMsg := tServermail.Create;
           try
-             MyMsg.MailSize  := ExternalPOP3.RetrieveMsgSize(I);
+             MyMsg.MailSize := ExternalPOP3.RetrieveMsgSize(I);
              ExternalPOP3.RetrieveHeader(I,Header);      // Headers only
              MyMsg.MailSubject := Header.Subject;        // Ref
              MyMsg.Mailsentby := Header.Sender.Text;    // Sender
@@ -1276,7 +1275,7 @@ begin
      end;
 end;
 
-Procedure TMBoxDataMod.GetAllMail(MailList:tStringList;Const MBoxName:String='');
+Procedure TMBoxDataMod.GetAllMail(MailList: TStringList; const MBoxName: String='');
 {
   Now get all the mails from the provider's server which are listed
   in MailList. The connection to the provider is still open and
@@ -1289,13 +1288,13 @@ Var       I,N,
           MyMsg         : tServerMail;
           RawFName      : String;
           dbState       : tDBMailState;
-          MyStrings     : tStringList;
+          MyStrings    : TStringList;
 {
    Here we will get all the mails. Beforehand, we have looked at the Server's site and
    got all the (unique) Mail-IDs.
 }
 
-Function CheckDBMail(MailID:String):tDBMailState;
+Function CheckDBMail(MailID: String):tDBMailState;
 { Check for completely/partly/unknown mail in Database
   We do not have a database yet, so we have to check for a known
   Mail-ID right now. To do this, we build a List of all maintained
@@ -1311,7 +1310,7 @@ begin
      Else                                 Result := dbNewMail;
 end;
 
-Procedure DeleteMail(const MsgNum:Integer);
+Procedure DeleteMail(const MsgNum: Integer);
 { Delete a mail on the provider's server
   this is done, after retrieval of the mail
   and only if allowed (which is the usual case)
@@ -1333,7 +1332,7 @@ begin  {GetAllMail}
      if Not assigned(MailList) then Exit;      // that would be an error
      if Maillist.Count <=0 then exit;          // nothing to do?
           try  // outermost block
-             DebugString(Format('%d message(s) found',[Maillist.Count]));
+             DebugString(Format('%d message(s) found', [Maillist.Count]));
              For I := 0 to MailList.Count - 1 do
              begin
                   MsgNum := I+1; {********* Messagenumbers Start with 1 !!!! *************}
@@ -1356,7 +1355,7 @@ begin  {GetAllMail}
 }
                        MyStrings := tStringList.Create;
                        try
-                          ExternalPOP3.RetrieveRaw(MsgNum,MyStrings);
+                          ExternalPOP3.RetrieveRaw(MsgNum, MyStrings);
 { there is one special character, we have to care for : the dot ('.')
   It is used to indicate the end of a message, so Indy will "byte off" some of them
 }
@@ -1373,7 +1372,7 @@ begin  {GetAllMail}
   name which is guessed from the list the mail is for.
   This could be a file list, then we'd have to save the mail several times.
 }
-                          RAWFname := GetRawFileName(MBoxRoot,MyMsg);
+                          RAWFname := GetRawFileName(MBoxRoot, MyMsg);
                           MyStrings.SavetoFile(RAWFname);
 {*********** Done with this mail *********************************}
                        finally
@@ -1400,7 +1399,7 @@ end;   { GetAllMail }
 
 procedure TMBoxDataMod.SendAllMail;
 var       MyList : tList;
-          ReschL : tStringList;
+          ReschL: TStringList;
           FN     : String;
           P      : PChar;
           Arch   : String;
@@ -1433,7 +1432,7 @@ begin
    so we can use a simple ReName to have the mail where we want it to be.
 }
                    Arch := MBoxRoot + SentArchive + ExtractFileName(Fn);
-                   RenameFile(Fn,Arch);
+                   RenameFile(Fn, Arch);
                 except
                       DebugException;
 { There was an error in sending a mail. I'd like to re-schedule the file
@@ -1462,7 +1461,7 @@ procedure TMBoxDataMod.GetSendMail;
    For debugging purposes, I heavily used try-except blocks
 }
 Var       Prvdr    : String;
-          MyMailList : tStringList;
+          MyMailList: TStringList;
 begin
      MyMailList := Nil;
      SetupExternals;

@@ -56,7 +56,7 @@ function ConfigureApplication(AppConfig : TApplicationConfig) : Boolean;
 var
   i : Integer;
 begin
-  Result := false;
+  Result := False;
   with TfrmConfigureApplication.Create(Application) do
     begin
       try
@@ -72,10 +72,10 @@ begin
                      begin
                        AppConfig.LogColors.Colors[AppConfig.LogColors[i]] := TColor(Pointer(cbElements.Items.Objects[i]));
                      end;
-                   result := true;
+                   Result := True;
                  end;
           mrCancel : begin
-                       result := false;
+                       Result := False;
                      end;
         end;
       finally

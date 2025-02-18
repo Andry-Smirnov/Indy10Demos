@@ -97,9 +97,9 @@ end;
 function TLogColors.GetColors(shortname: string): TColor;
 begin
   if indexof(shortname) > -1 then
-    result := TColor(Pointer(Objects[indexof(shortname)]))
+    Result := TColor(Pointer(Objects[indexof(shortname)]))
   else
-    result := clBlack;
+    Result := clBlack;
 end;
 
 procedure TLogColors.SetColors(shortname: string; const Value: TColor);

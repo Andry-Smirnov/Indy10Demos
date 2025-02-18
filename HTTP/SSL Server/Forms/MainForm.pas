@@ -94,7 +94,7 @@ type
     function StopServer  : Boolean;
 
     procedure PopulateIPAddresses;
-    function PortDescription(const PortNumber: integer): string;
+    function PortDescription(const PortNumber: Integer): string;
 
     procedure LoadDefaultValues;
     procedure SaveDefaultValues;
@@ -143,7 +143,7 @@ begin
       if lbIPs.Checked[c] then
         inc(i);
     end;
-  result := i > 0;
+  Result := i > 0;
   if not result then
     begin
       Log('Can''t start server until you select at least one IP to bind to.', clRed);
@@ -154,7 +154,7 @@ end;
 
 procedure TfrmMain.PopulateIPAddresses;
 var
-  i : integer;
+  i : Integer;
 begin
 // Again this section should not change
   with lbIPs do
@@ -173,7 +173,7 @@ begin
   end;
 end;
 
-function TfrmMain.PortDescription(const PortNumber: integer): string;
+function TfrmMain.PortDescription(const PortNumber: Integer): string;
 begin
 // Guess what more code that shouldn't change
   with TIdStackWindows(GStack).WSGetServByPort(PortNumber) do
@@ -198,14 +198,14 @@ end;
 function TfrmMain.StartServer: Boolean;
 var
   Binding : TIdSocketHandle;
-  i : integer;
+  i : Integer;
   SL : TStringList;
 begin
 // This code starts the server up and posts back information about
 // the server starting up.
 // You should place your pre and post startup code in InternalServerBeforeStart
 // and InternalServerAfterStart accordingly.
-  Result := false;
+  Result := False;
   if not CheckStartOk then
     exit;
 
@@ -214,7 +214,7 @@ begin
   if not StopServer then
     begin
       Log( 'Error stopping server', clRed );
-      Result := false;
+      Result := False;
       exit;
     end;
 
@@ -233,8 +233,8 @@ begin
 
       if InternalServerBeforeStart then
         begin
-          Server.Active := true;
-          result := Server.Active;
+          Server.Active := True;
+          Result := Server.Active;
 
           InternalServerAfterStart;
           if ServerOnline then
@@ -249,7 +249,7 @@ begin
         begin
           Log( 'Server not started', clRed );
           Log( E.Message, clRed );
-          Result := false;
+          Result := False;
         end;
     end;
   finally
@@ -266,13 +266,13 @@ begin
 // You should place your pre and post shutdown code in InternalServerBeforeStop
 // and InternalServerAfterStop accordingly.
 
-  Result := false;
+  Result := False;
 
   b := Server.Active;
 
   if InternalServerBeforeStop then
     begin
-      Server.Active := false;
+      Server.Active := False;
       Server.Bindings.Clear;
       Result := not Server.Active;
 
@@ -331,15 +331,15 @@ begin
     begin
       s := Ini.ReadString('Settings', 'IP' + IntToStr(i), '');
       if lbIPs.Items.IndexOf(s) > -1 then
-        lbIPs.Checked[lbIPs.Items.IndexOf(s)] := true;
+        lbIPs.Checked[lbIPs.Items.IndexOf(s)] := True;
     end;
   edServerRoot.Text := Ini.ReadString('Settings', 'ServerRoot', ExtractFilePath(ParamStr(0)) + 'Docs');
 
-  edCertFile.Text   := Ini.ReadString('SSLSettings', 'CertFile', '');
+  edCertFile.Text := Ini.ReadString('SSLSettings', 'CertFile', '');
   edCipherList.Text := Ini.ReadString('SSLSettings', 'CipherList', '');
   edKeyFile.Text := Ini.ReadString('SSLSettings', 'KeyFile', '');
   edRootCertFile.Text := Ini.ReadString('SSLSettings', 'RootCertFile', '');
-  edPassword.Text   := Ini.ReadString('SSLSettings', 'Password', '');
+  edPassword.Text := Ini.ReadString('SSLSettings', 'Password', '');
 end;
 
 procedure TfrmMain.SaveDefaultValues;
@@ -378,26 +378,26 @@ var
   begin
     if pos('=', opt) > 0 then
       begin
-        result := copy(opt, 1, pos('=', opt) - 1);
+        Result := copy(opt, 1, Pos('=', opt) - 1);
         if result[1] in ['-', '/', '\'] then
-          result := copy(result, 2, length(result));
+          Result := copy(result, 2, Length(result));
       end
     else
-      result := opt;
+      Result := opt;
   end;
 
   function OptValue : String;
   begin
     if pos('=', opt) > 0 then
-      result := copy(opt, pos('=', opt) + 1, length(opt))
+      Result := copy(opt, Pos('=', opt) + 1, Length(opt))
     else
-      result := opt;
+      Result := opt;
   end;
 begin
 // The check options procedure should be used to check commandline options
 // if you wish to support command line options then please add it here.
 // By default port and autostart are supported.
-  bDoAutoStart := false;
+  bDoAutoStart := False;
   for i := 1 to ParamCount do
     begin
       opt := LowerCase(ParamStr(i));
@@ -406,7 +406,7 @@ begin
         edPort.Text := OptValue;
 
       if OptName = 'autostart' then
-        bDoAutoStart := true;
+        bDoAutoStart := True;
     end;
     
   if bDoAutoStart then
@@ -416,7 +416,7 @@ end;
 function TfrmMain.GetServerOnline: Boolean;
 begin
 // Just a faster way then checking server.active for some
-  result := Server.Active;
+  Result := Server.Active;
 end;
 
 procedure TfrmMain.lbProcessesDrawItem(Control: TWinControl;
@@ -468,17 +468,17 @@ begin
   // Perform your startup code here.  if you do not wish the server to start
   // then simply return false from this function and report back the proper
   // error by calling Log(YourMessage, clRed);
-  result := true;
+  Result := True;
   try
     with OpenSSL.SSLOptions do
       begin
-        CertFile   := edCertFile.Text;
+        CertFile := edCertFile.Text;
         CipherList := edCipherList.Text;
         KeyFile := edKeyFile.Text;
         RootCertFile := edRootCertFile.Text;
       end;
   except
-    result := false;
+    Result := False;
   end;
 end;
 
@@ -486,14 +486,14 @@ procedure TfrmMain.InternalServerAfterStart;
 begin
 // Your code should go here.  At this point the server is active.
 // So if you need to stop it then you should call StopServer
-// or for a hard halt call Server.Active := false;
+// or for a hard halt call Server.Active := False;
 end;
 
 procedure TfrmMain.InternalServerAfterStop;
 begin
 // Your code should go here.  At this point the server has been stoped.
 // So if you need to start it then you should call StartServer
-// or for a force start call Server.Active := true;
+// or for a force start call Server.Active := True;
 end;
 
 function TfrmMain.InternalServerBeforeStop: Boolean;
@@ -501,7 +501,7 @@ begin
   // Preform your shutdown code here.  If you do not wish the server to stop
   // then simply return false from this function and report back the proper
   // error by calling Log(YourMessage, clRed);
-  Result := true;
+  Result := True;
 end;
 
 procedure TfrmMain.SetControls;
@@ -548,9 +548,9 @@ begin
   else
     rPage := 'Index.htm';
   if PathDelim = '\' then
-    rPage := StringReplace(rPage, '/', '\',[rfReplaceAll, rfIgnoreCase])
+    rPage := StringReplace(rPage, '/', '\', [rfReplaceAll, rfIgnoreCase])
   else
-    rPage := StringReplace(rPage, '\', '/',[rfReplaceAll, rfIgnoreCase]);
+    rPage := StringReplace(rPage, '\', '/', [rfReplaceAll, rfIgnoreCase]);
   rPage := IncludeTrailingPathDelimiter(edServerRoot.Text) + rPage;
   if FileExists(rPage) then
     AResponseInfo.ServeFile(AContext, rPage)

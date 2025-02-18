@@ -30,30 +30,30 @@ Type
     procedure DataModuleDestroy(Sender: TObject);
   private
     { Private-Deklarationen }
-    fMailboxList  : tStringList;
-    fEmailAddrs   : tStringList;
+    fMailboxList : TStringList;
+    fEmailAddrs  : TStringList;
     fSendQueue    : tThreadList;
-    Function  AddUser(Const AUserName,APassword,AMBoxName:String):Boolean;
-    Function  AddEmailAccount(Const AEmailAddress,AUserName:String):Boolean;
+    Function  AddUser(const AUserName, APassword, AMBoxName: String): Boolean;
+    Function  AddEmailAccount(const AEmailAddress, AUserName: String): Boolean;
     Procedure FillUserList;
   public
     { Public-Deklarationen }
-    Property  MailBoxList : tStringList read fMailBoxList;
-    Property  EmailAddrs  : tStringList read fEmailAddrs;
+    Property  MailBoxList: TStringList read fMailBoxList;
+    Property  EmailAddrs : TStringList read fEmailAddrs;
     Property  SendQueue   : tThreadList  read fSendQueue;
-    Function  GetSendMailCount:Integer;
+    Function  GetSendMailCount: Integer;
     Function  GetMailNumber:Cardinal;
-    Function  GetSendFileName(Const AMBox:String):String;
+    Function  GetSendFileName(const AMBox: String): String;
     Function  GetRecvFileName(const AMBox: String): String;
-    Procedure EnterToSendMail(Const AFileName:String);
-    Function  GetMBoxName(Const AUser:String):String;
+    Procedure EnterToSendMail(const AFileName: String);
+    Function  GetMBoxName(const AUser: String): String;
   end;
 
 var
   Pop3DBMod: TPop3DBMod;
 
-Function GetValidMailBoxName(Const AUserName,APassword:String):String;
-Function GetMailBoxList:tStringList;
+Function GetValidMailBoxName(const AUserName, APassword: String): String;
+Function GetMailBoxList: TStringList;
 
 implementation
 Uses IdGlobal;
@@ -62,7 +62,7 @@ Type
     tUserObject = Class(tObject)
        PassWord     : String;
        MBoxName     : String;
-       Constructor Create(Const APassword,AMBoxName:String);
+       Constructor Create(const APassword, AMBoxName: String);
     end;
 
 { if you use a database, this can be used to sequence accesses to the DB which
@@ -71,7 +71,7 @@ Type
 Var DBSection : tIdCriticalSection;
 { TPop3DBMod }
 
-function GetValidMailBoxName(const AUserName,APassword: String): String;
+function GetValidMailBoxName(const AUserName, APassword: String): String;
 {
          A user is logging in. He gave us a Username together with a password.
          Check for a legal combination and return the path to the mailfolder
@@ -91,7 +91,7 @@ begin
      end;
 end;
 
-Function GetMailBoxList:tStringList;
+Function GetMailBoxList: TStringList;
 {
      Return a list of all known local mailboxes
 }
@@ -111,7 +111,7 @@ end;
 
 procedure TPop3DBMod.DataModuleCreate(Sender: TObject);
 begin
-     DBSection  := tIdCriticalSection.Create;
+     DBSection := tIdCriticalSection.Create;
 
      fMailBoxList := tStringList.Create;
      fMailboxlist.Duplicates := DupError;
@@ -122,7 +122,7 @@ begin
      fEmailAddrs.Sorted := True;
 
      FillUserList;
-     fSendQueue  := tThreadList.Create;
+     fSendQueue := tThreadList.Create;
 end;
 
 procedure TPop3DBMod.DataModuleDestroy(Sender: TObject);
@@ -141,7 +141,7 @@ begin
      FreeAndNil(DBSection);
 end;
 
-function TPop3DBMod.AddUser(const AUserName, APassword,AMBoxName: String): Boolean;
+function TPop3DBMod.AddUser(const AUserName, APassword, AMBoxName: String): Boolean;
 { Add a user to the local system
   AUsername : is the account
   APassword : plain-text password
@@ -155,7 +155,7 @@ Var      ThisUser : tUserObject;
 begin
      Result := True; // assume all goes well
      try
-        ThisUser := tUserObject.Create(APassword,AMBoxName);
+        ThisUser := tUserObject.Create(APassword, AMBoxName);
         fMailBoxList.AddObject(AUserName, ThisUser);
      Except
            Result := False;
@@ -186,11 +186,11 @@ begin
      try
         DBSection.Enter;
 { first the user in the system }
-//      AddUser(AccountName, Password,Foldername);
-        AddUser('Thats.MySelf','Top_Secret','MyMailBox');
+//      AddUser(AccountName, Password, Foldername);
+        AddUser('Thats.MySelf', 'Top_Secret', 'MyMailBox');
 { then the external email-address and the Username (for delivering inbound mail)}
 //      AddEmail(Email-Address,Username)
-        AddEmailAccount('maildemo@nerdshack.com','Thats.MySelf');
+        AddEmailAccount('maildemo@nerdshack.com', 'Thats.MySelf');
      Finally
             DBSection.Leave;
      end;
@@ -207,7 +207,7 @@ begin
      DBSection.Enter;
      Try
         FName := ExtractFilePath(Application.ExeName)+NumberFName;
-        AssignFile(NumberFile,FName);
+        AssignFile(NumberFile, FName);
         if FileExists(FName) Then
         begin
              Reset(NumberFile);
@@ -230,14 +230,14 @@ function TPop3DBMod.GetSendFileName(const AMBox: String): String;
 // Generate FileName for a mail to send
 begin
      Result := AMBox + '\'
-            +  Format('M%.8d.SNT',[GetMailNumber]);
+            +  Format('M%.8d.SNT', [GetMailNumber]);
 end;
 
 function TPop3DBMod.GetRecvFileName(const AMBox: String): String;
 // Generate FileName for a mail to send
 begin
      Result := AMBox + '\'
-            +  Format('M%.8d.RAW',[GetMailNumber]);
+            +  Format('M%.8d.RAW', [GetMailNumber]);
 end;
 
 function TPop3DBMod.GetSendMailCount: Integer;
@@ -268,7 +268,7 @@ end;
 
 { tUserObject }
 
-constructor tUserObject.Create(const APassword,AMBoxName: String);
+constructor tUserObject.Create(const APassword, AMBoxName: String);
 begin
      Self.PassWord := APassWord;
      Self.MBoxName := AMBoxName;

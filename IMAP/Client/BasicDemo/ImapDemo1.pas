@@ -66,7 +66,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
-    i: integer;
+    i: Integer;
     bRet: Boolean;
 begin
     if Button1.Caption = 'Disconnect' then begin
@@ -120,8 +120,8 @@ procedure TForm1.ListBox1Click(Sender: TObject);
 var
     TheFlags: TIdMessageFlagsSet;
     TheUID: string;
-    i: integer;
-    nCount: integer;
+    i: Integer;
+    nCount: Integer;
     TheMsg: TIdMessage;
     MailBoxName: string;
 begin
