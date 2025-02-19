@@ -416,23 +416,25 @@ Procedure MyDialFunc1(Hndl     : tHRasConn;
 Var     I      : Integer;
         RasObj : tRasConnection;
 begin
-     I := FindRasIndex(Hndl);
-     if I < 0 then exit;
-     RasObj := tRasIdentifier(RasObjectList[I]).rasObject;
-     with RasObj do begin
-          If ActError = 0 then
-          begin
-               State := NewState;
-          end
-          else
-          begin
-               fError := ActError;
-               fErrMsg := RasGetErrorString(ActError);
-               AbortDial;
-               If Assigned(OnError) then
-                  OnError(RasObj,ErrMsg);
-          end;
-     end;
+  I := FindRasIndex(Hndl);
+  if I < 0 then
+    exit;
+  RasObj := tRasIdentifier(RasObjectList[I]).rasObject;
+  with RasObj do
+  begin
+    If ActError = 0 then
+      begin
+        State := NewState;
+      end
+    else
+      begin
+        fError := ActError;
+        fErrMsg := RasGetErrorString(ActError);
+        AbortDial;
+        If Assigned(OnError) then
+          OnError(RasObj,ErrMsg);
+      end;
+  end;
 end;
 
 Procedure tRasConnection.DialUp;

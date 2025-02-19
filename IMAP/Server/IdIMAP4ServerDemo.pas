@@ -232,29 +232,31 @@ begin
   //INBOX must always exist.
   LDir := NameAndMailBoxToPath(ALoginName, 'INBOX');  {Do not Localize}
   if DirectoryExists(LDir) = True then
-  begin
-    ShowMessage('User already exists (i.e. directory '+LDir+' exists)');  {Do not Localize}
-    Exit;
-  end;
+    begin
+      ShowMessage('User already exists (i.e. directory '+LDir+' exists)');  {Do not Localize}
+      Exit;
+    end;
   LDir := FRootPath;
   if LDir[Length(LDir)] <> PathDelim then
-  begin
-    LDir := LDir + PathDelim;
-  end;
+    begin
+      LDir := LDir + PathDelim;
+    end;
   LDir := LDir + ALoginName;
   if ForceDirectories(LDir) = False then
-  begin
-    ShowMessage('Failed to create users directory '+LDir);  {Do not Localize}
-    Exit;
-  end;
+    begin
+      ShowMessage('Failed to create users directory '+LDir);  {Do not Localize}
+      Exit;
+    end;
   if CreateMailBox(ALoginName, 'INBOX') = True then
-  begin  {Do not Localize}
-    ShowMessage('Successfully added user and created INBOX for '+ALoginName);  {Do not Localize}
-    Result := True;
-  end else begin
-    ShowMessage('Failed to create INBOX for '+ALoginName);  {Do not Localize}
-    Result := False;
-  end;
+    begin  {Do not Localize}
+      ShowMessage('Successfully added user and created INBOX for '+ALoginName);  {Do not Localize}
+      Result := True;
+    end
+  else
+    begin
+      ShowMessage('Failed to create INBOX for '+ALoginName);  {Do not Localize}
+      Result := False;
+    end;
 end;
 
 function TIdIMAP4ServerDemo.DeleteUser(ALoginName: string): Boolean;
@@ -286,29 +288,32 @@ var
 begin
   //Empty the dir first...
   LRet := FindFirst(ADir+PathDelim+'*.*', faDirectory, LSrchRec);  {Do not Localize}
-  while LRet = 0 do begin
-    if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
-    begin  {Do not Localize}
-      if (LSrchRec.Attr and faDirectory) <> 0 then
-      begin
-        RecursivelyEmptyDir(ADir+PathDelim+LSrchRec.Name);
-      end else begin
-        if DeleteFile(ADir+PathDelim+LSrchRec.Name) = False then
-        begin
-          ShowMessage('Unable to delete file '+ADir+PathDelim+LSrchRec.Name+' (is it in use?)');
-          Exit;
+  while LRet = 0 do
+    begin
+      if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
+        begin  {Do not Localize}
+          if (LSrchRec.Attr and faDirectory) <> 0 then
+            begin
+              RecursivelyEmptyDir(ADir+PathDelim+LSrchRec.Name);
+            end
+          else
+            begin
+              if DeleteFile(ADir+PathDelim+LSrchRec.Name) = False then
+                begin
+                  ShowMessage('Unable to delete file '+ADir+PathDelim+LSrchRec.Name+' (is it in use?)');
+                  Exit;
+                end;
+            end;
         end;
-      end;
+      LRet := FindNext(LSrchRec);
     end;
-    LRet := FindNext(LSrchRec);
-  end;
   FindClose(LSrchRec);
   //Now delete it...
   if RemoveDir(ADir) = False then
-  begin
-    ShowMessage('Unable to delete directory '+ADir+' (is it in use?)');
-    Exit;
-  end;
+    begin
+      ShowMessage('Unable to delete directory '+ADir+' (is it in use?)');
+      Exit;
+    end;
 end;
 
 function TIdIMAP4ServerDemo.DoesImapMailBoxExist(ALoginName, AMailbox: string): Boolean;
@@ -348,7 +353,8 @@ begin
   LDir := NameAndMailBoxToPath(ALoginName, AMailbox);
   //Empty the dir first...
   LRet := FindFirst(LDir+PathDelim+'*.*', 0, LSrchRec);  {Do not Localize}
-  while LRet = 0 do begin
+  while LRet = 0 do
+  begin
     if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
     begin  {Do not Localize}
       if DeleteFile(LDir+PathDelim+LSrchRec.Name) = False then
@@ -407,7 +413,8 @@ begin
   if LMailbox <> '' then
   begin
     //Must replace mailbox delims with path delims...
-    for LN := 1 to Length(LMailbox) do begin
+    for LN := 1 to Length(LMailbox) do
+    begin
       if LMailbox[LN] = MailBoxSeparator then
       begin
         LMailbox[LN] := PathDelim;
@@ -526,7 +533,8 @@ var
 begin
   LDir := NameAndMailBoxToPath(ALoginName, AMailBoxName)+PathDelim;
   LRet := FindFirst(LDir+'*.txt', {FileAttrs} 0, LSrchRec);  {Do not Localize}
-  while LRet = 0 do begin
+  while LRet = 0 do
+  begin
     //Extract the UID from the filename...
     LName := ChangeFileExt(LSrchRec.Name, '');
     LMsgItem := AMailBox.MessageList.Add;
@@ -562,31 +570,34 @@ begin
   Result := False;
   LMailBoxName := StripQuotesIfNecessary(AMailBoxName);
   LRet := FindFirst(ADir+PathDelim+'*.*', faDirectory, LSrchRec);  {Do not Localize}
-  while LRet = 0 do begin
-    if (LSrchRec.Attr and faDirectory) <> 0 then
+  while LRet = 0 do
     begin
-      //It is a directory...
-      if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
-      begin  {Do not Localize}
-        Result := True;  //Got at least one SubMailBox
-        LTemp := '';
-        if LMailBoxName <> '' then
+      if (LSrchRec.Attr and faDirectory) <> 0 then
         begin
-          LTemp := LMailBoxName + MailBoxSeparator;
+          //It is a directory...
+          if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
+            begin  {Do not Localize}
+              Result := True;  //Got at least one SubMailBox
+              LTemp := '';
+              if LMailBoxName <> '' then
+                begin
+                  LTemp := LMailBoxName + MailBoxSeparator;
+                end;
+              LTemp := LTemp + LSrchRec.Name;
+              LDoesMailBoxHaveSubMailBoxes := GetMailBoxes(ADir+PathDelim+LSrchRec.Name, LTemp, AMailBoxNames, AMailBoxFlags);
+              AMailBoxNames.Add(LTemp);
+              if LDoesMailBoxHaveSubMailBoxes = True then
+                begin
+                  AMailBoxFlags.Add('\HasChildren');  {Do not Localize}
+                end
+              else
+                begin
+                  AMailBoxFlags.Add('\HasNoChildren');  {Do not Localize}
+                end;
+            end;
         end;
-        LTemp := LTemp + LSrchRec.Name;
-        LDoesMailBoxHaveSubMailBoxes := GetMailBoxes(ADir+PathDelim+LSrchRec.Name, LTemp, AMailBoxNames, AMailBoxFlags);
-        AMailBoxNames.Add(LTemp);
-        if LDoesMailBoxHaveSubMailBoxes = True then
-        begin
-          AMailBoxFlags.Add('\HasChildren');  {Do not Localize}
-        end else begin
-          AMailBoxFlags.Add('\HasNoChildren');  {Do not Localize}
-        end;
-      end;
+      LRet := FindNext(LSrchRec);
     end;
-    LRet := FindNext(LSrchRec);
-  end;
   FindClose(LSrchRec);
 end;
 
@@ -612,7 +623,8 @@ begin
   //with newly-created mailboxes)...
   LLargestUIDInUse := 0;
   LRet := FindFirst(LDir+'*.txt', {FileAttrs} 0, LSrchRec);  {Do not Localize}
-  while LRet = 0 do begin
+  while LRet = 0 do
+  begin
     //Extract the UID from the filename...
     LName := ChangeFileExt(LSrchRec.Name, '');
     if StrToInt(LName) > LLargestUIDInUse then
@@ -668,35 +680,37 @@ begin
   LParams := TStringList.Create;
   BreakApart(ASender.UnparsedParams, ' ', LParams); {Do not Localize}
   if ReinterpretParamAsMailBox(LParams, 0) = False then
-  begin
-    SendBadReply(ASender, 'Mailbox parameter is invalid.');  {Do not Localize}
-    LParams.Free;
-    Exit;
-  end;
+    begin
+      SendBadReply(ASender, 'Mailbox parameter is invalid.');  {Do not Localize}
+      LParams.Free;
+      Exit;
+    end;
   if LParams.Count < 1 then
-  begin
-    //Incorrect number of params...
-    SendIncorrectNumberOfParameters(ASender);
-    LParams.Free;
-    Exit;
-  end;
+    begin
+      //Incorrect number of params...
+      SendIncorrectNumberOfParameters(ASender);
+      LParams.Free;
+      Exit;
+    end;
   if DoesImapMailBoxExist(TIdIMAP4PeerContext(ASender.Context).LoginName, LParams[0]) = False then
-  begin
-    SendNoReply(ASender, 'Mailbox does not exist.');  {Do not Localize}
-    LParams.Free;
-    Exit;
-  end;
+    begin
+      SendNoReply(ASender, 'Mailbox does not exist.');  {Do not Localize}
+      LParams.Free;
+      Exit;
+    end;
   {Get everything you need for this mailbox...}
   SetupMailbox(TIdIMAP4PeerContext(ASender.Context).LoginName,
     LParams[0],
     TIdIMAP4PeerContext(ASender.Context).MailBox);
   LParams.Free;
   if AReadOnly = True then
-  begin
-    TIdIMAP4PeerContext(ASender.Context).MailBox.State := msReadOnly;
-  end else begin
-    TIdIMAP4PeerContext(ASender.Context).MailBox.State := msReadWrite;
-  end;
+    begin
+      TIdIMAP4PeerContext(ASender.Context).MailBox.State := msReadOnly;
+    end
+  else
+    begin
+      TIdIMAP4PeerContext(ASender.Context).MailBox.State := msReadWrite;
+    end;
   {Send the stats...}
   OutputCurrentMailboxStats(ASender);
   Result := True;
