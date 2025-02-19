@@ -3,7 +3,7 @@ unit MBoxDataModule;
   the skeleton with a little bit of flesh...
 
     2005
-  Jörg Meier (Bob)
+  Jï¿½rg Meier (Bob)
   emil@jmeiersoftware.de
 
 }
@@ -420,7 +420,8 @@ begin
            begin
                 Connected := RasConn.Connectwith(Provider);
                 fNewConnection := True;
-                if connected then begin
+                if connected then
+                begin
                    prvName   := Provider;
                    fdoHangup := true;
 //                       LogMessage('Connection with '+prvName + ' established.',2);
@@ -571,7 +572,7 @@ begin
              end;
         end;
         FreeAndNil(UserData);
-        ASender.Context.Data := Nil;
+        ASender.Context.Data := nil;
      Finally
             DebugOutput('QUIT',ASender);
      End;
@@ -1156,7 +1157,7 @@ Var       UserData  : tUserData;
 begin
       UserData      := tUserData(AContext.Data);
       FreeAndNil(UserData);
-      AContext.Data := Nil;
+      AContext.Data := nil;
 end;
 
 procedure TMBoxDataMod.InternalSMTPException(AContext: TIdContext;
@@ -1464,7 +1465,7 @@ procedure TMBoxDataMod.GetSendMail;
 Var       Prvdr    : String;
           MyMailList : tStringList;
 begin
-     MyMailList := Nil;
+     MyMailList := nil;
      SetupExternals;
 // Do we have to dial or connect via LAN
      If ProviderForm.LanChk.Checked then Prvdr := ''

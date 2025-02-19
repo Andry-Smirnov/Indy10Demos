@@ -233,7 +233,7 @@ begin
   pbProgress.Left   := r.Left;
   pbProgress.Width  := r.Right - r.Left;
   pbProgress.Height := r.Bottom - r.Top;
-  pbProgress.Visible:= false;
+  pbProgress.Visible := false;
 end;
 
 procedure TfrmMain.FTPStatus(ASender: TObject; const AStatus: TIdStatus;

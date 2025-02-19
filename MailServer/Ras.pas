@@ -213,7 +213,7 @@ type
 {*                                                          *}
 {************************************************************}
 
-Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must be NIL
+Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must benil
                         szPhonebook    : PChar;	         // full path and filename of phonebook file
                         lpRasEntryName : PArrayRASENTRYNAME;  // buffer to receive entries
                    var  lpcb           : integer;	 // size in bytes of buffer
@@ -287,7 +287,7 @@ function RasEnumConnectionsA(
                   pcConnections : PDWORD // number of connections written to buffer
                  ) : DWORD; stdcall
 function RasEnumEntriesA(
-                  Reserved : Pointer;	 // reserved, must be NIL
+                  Reserved : Pointer;	 // reserved, must benil
                   szPhonebook : PChar;	 // full path and filename of phonebook file
                   lpRasEntryName : PRASENTRYNAME; // buffer to receive entries
                   lpcb : PDWORD;	 // size in bytes of buffer
@@ -444,11 +444,13 @@ Begin
      Connected := false;   { Hangup any pending connection }
      fHandle := 0;
      R := RasDial(nil,nil,fDialParams,1,@MyDialFunc1,fHandle);
-     If R <> 0 then begin
+     If R <> 0 then
+     begin
         Raise Exception.create('Verbindungsfehler : '+ErrMsg);
      end;
      fTimer.Enabled := True;
-     If fHandle <= 0 then exit;
+     If fHandle <= 0 then
+       exit;
      new(thisRas);
      thisRas.rasHandle := fhandle;
      thisRas.RasObject := Self;
@@ -523,7 +525,7 @@ end;
 {*       Pascal Interfaces                                  *}
 {*                                                          *}
 {************************************************************}
-Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must be NIL
+Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must benil
                         szPhonebook    : PChar;	         // full path and filename of phonebook file
                         lpRasEntryName : PArrayRASENTRYNAME;  // buffer to receive entries
                    var  lpcb           : integer;	 // size in bytes of buffer
@@ -656,7 +658,6 @@ begin
     end;
 end;
 
-
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function RasGetIPAddress: string;
 var
@@ -665,24 +666,24 @@ var
     dwCount    : DWORD;
     RASpppIP   : TRASPPPIP;
 begin
-    Result          := '';
-    RASConns.dwSize := SizeOf(TRASConn);
-    RASpppIP.dwSize := SizeOf(RASpppIP);
-    dwSize          := SizeOf(RASConns);
-    if RASEnumConnectionsA(@RASConns, @dwSize, @dwCount) = 0 then begin
-        if dwCount > 0 then begin
-            dwSize := SizeOf(RASpppIP);
-            RASpppIP.dwSize := SizeOf(RASpppIP);
-            if RASGetProjectionInfoA(RASConns.hRasConn,
-                                     RASP_PppIp,
-                                     @RasPPPIP,
-                                     @dwSize) = 0 then
-                Result := StrPas(RASpppIP.szIPAddress);
-       end;
+  Result          := '';
+  RASConns.dwSize := SizeOf(TRASConn);
+  RASpppIP.dwSize := SizeOf(RASpppIP);
+  dwSize          := SizeOf(RASConns);
+  if RASEnumConnectionsA(@RASConns, @dwSize, @dwCount) = 0 then
+    begin
+      if dwCount > 0 then
+        begin
+          dwSize := SizeOf(RASpppIP);
+          RASpppIP.dwSize := SizeOf(RASpppIP);
+          if RASGetProjectionInfoA(RASConns.hRasConn,
+                                    RASP_PppIp,
+                                    @RasPPPIP,
+                                    @dwSize) = 0 then
+              Result := StrPas(RASpppIP.szIPAddress);
+        end;
     end;
 end;
-
-
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function RasDialA;                 external rasapi32 name 'RasDialA';
@@ -700,6 +701,8 @@ function RasGetProjectionInfoA;    external rasapi32 name 'RasGetProjectionInfoA
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 initialization
         RasObjectList := tList.create;
+
 Finalization
         RasObjectList.Free;
+
 end.

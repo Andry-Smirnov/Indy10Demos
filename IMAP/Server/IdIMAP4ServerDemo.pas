@@ -231,20 +231,24 @@ begin
   Result := False;
   //INBOX must always exist.
   LDir := NameAndMailBoxToPath(ALoginName, 'INBOX');  {Do not Localize}
-  if DirectoryExists(LDir) = True then begin
+  if DirectoryExists(LDir) = True then
+  begin
     ShowMessage('User already exists (i.e. directory '+LDir+' exists)');  {Do not Localize}
     Exit;
   end;
   LDir := FRootPath;
-  if LDir[Length(LDir)] <> PathDelim then begin
+  if LDir[Length(LDir)] <> PathDelim then
+  begin
     LDir := LDir + PathDelim;
   end;
   LDir := LDir + ALoginName;
-  if ForceDirectories(LDir) = False then begin
+  if ForceDirectories(LDir) = False then
+  begin
     ShowMessage('Failed to create users directory '+LDir);  {Do not Localize}
     Exit;
   end;
-  if CreateMailBox(ALoginName, 'INBOX') = True then begin  {Do not Localize}
+  if CreateMailBox(ALoginName, 'INBOX') = True then
+  begin  {Do not Localize}
     ShowMessage('Successfully added user and created INBOX for '+ALoginName);  {Do not Localize}
     Result := True;
   end else begin
@@ -259,12 +263,14 @@ var
 begin
   Result := False;
   LDir := NameAndMailBoxToPath(ALoginName, 'INBOX');  {Do not Localize}
-  if DirectoryExists(LDir) = False then begin
+  if DirectoryExists(LDir) = False then
+  begin
     ShowMessage('User does not exist (i.e. directory '+LDir+' does not exist)');  {Do not Localize}
     Exit;
   end;
   LDir := FRootPath;
-  if LDir[Length(LDir)] <> PathDelim then begin
+  if LDir[Length(LDir)] <> PathDelim then
+  begin
     LDir := LDir + PathDelim;
   end;
   LDir := LDir + ALoginName;
@@ -281,11 +287,14 @@ begin
   //Empty the dir first...
   LRet := FindFirst(ADir+PathDelim+'*.*', faDirectory, LSrchRec);  {Do not Localize}
   while LRet = 0 do begin
-    if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then begin  {Do not Localize}
-      if (LSrchRec.Attr and faDirectory) <> 0 then begin
+    if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
+    begin  {Do not Localize}
+      if (LSrchRec.Attr and faDirectory) <> 0 then
+      begin
         RecursivelyEmptyDir(ADir+PathDelim+LSrchRec.Name);
       end else begin
-        if DeleteFile(ADir+PathDelim+LSrchRec.Name) = False then begin
+        if DeleteFile(ADir+PathDelim+LSrchRec.Name) = False then
+        begin
           ShowMessage('Unable to delete file '+ADir+PathDelim+LSrchRec.Name+' (is it in use?)');
           Exit;
         end;
@@ -295,7 +304,8 @@ begin
   end;
   FindClose(LSrchRec);
   //Now delete it...
-  if RemoveDir(ADir) = False then begin
+  if RemoveDir(ADir) = False then
+  begin
     ShowMessage('Unable to delete directory '+ADir+' (is it in use?)');
     Exit;
   end;
@@ -315,11 +325,14 @@ var
 begin
   Result := False;
   LDir := NameAndMailBoxToPath(ALoginName, AMailbox);
-  if CreateDir(LDir) = False then begin
+  if CreateDir(LDir) = False then
+  begin
     Exit;
   end;
-  //if FileCreate(LDir + PathDelim + '1.uid') = -1 then begin
-  if CreateEmptyFile (LDir + PathDelim + '1.uid') = False then begin  {Do not Localize}
+  //if FileCreate(LDir + PathDelim + '1.uid') = -1 then
+  //begin
+  if CreateEmptyFile (LDir + PathDelim + '1.uid') = False then
+  begin  {Do not Localize}
     Exit;
   end;
   Result := True;
@@ -336,8 +349,10 @@ begin
   //Empty the dir first...
   LRet := FindFirst(LDir+PathDelim+'*.*', 0, LSrchRec);  {Do not Localize}
   while LRet = 0 do begin
-    if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then begin  {Do not Localize}
-      if DeleteFile(LDir+PathDelim+LSrchRec.Name) = False then begin
+    if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
+    begin  {Do not Localize}
+      if DeleteFile(LDir+PathDelim+LSrchRec.Name) = False then
+      begin
         Exit;
       end;
     end;
@@ -345,7 +360,8 @@ begin
   end;
   FindClose(LSrchRec);
   //Now delete it...
-  if RemoveDir(LDir) = False then begin
+  if RemoveDir(LDir) = False then
+  begin
     Exit;
   end;
   Result := True;
@@ -382,15 +398,18 @@ var
   LMailBox: string;
 begin
   LDir := FRootPath;
-  if LDir[Length(LDir)] <> PathDelim then begin
+  if LDir[Length(LDir)] <> PathDelim then
+  begin
     LDir := LDir + PathDelim;
   end;
   LDir := LDir + ALoginName;
   LMailBox := StripQuotesIfNecessary(AMailbox);
-  if LMailbox <> '' then begin
+  if LMailbox <> '' then
+  begin
     //Must replace mailbox delims with path delims...
     for LN := 1 to Length(LMailbox) do begin
-      if LMailbox[LN] = MailBoxSeparator then begin
+      if LMailbox[LN] = MailBoxSeparator then
+      begin
         LMailbox[LN] := PathDelim;
       end;
     end;
@@ -407,7 +426,8 @@ begin
   Result := False;
   LDirOld := NameAndMailBoxToPath(ALoginName, AOldMailboxName);
   LDirNew := NameAndMailBoxToPath(ALoginName, ANewMailboxName);
-  if RenameFile(LDirOld, LDirNew) = False then begin
+  if RenameFile(LDirOld, LDirNew) = False then
+  begin
     Exit;
   end;
   Result := True;
@@ -444,7 +464,8 @@ begin
   //We need the next free UID in the destination dir...
   LNewUID := GetNextFreeUID(ALoginName, ADestinationMailBox);
   LDestFile   := NameAndMailBoxToPath(ALoginName, ADestinationMailBox) + PathDelim + LNewUID + '.txt';  {Do not Localize}
-  if IndyCopyFile(LSourceFile, LDestFile, True) = False then begin
+  if IndyCopyFile(LSourceFile, LDestFile, True) = False then
+  begin
     Exit;
   end;
   Result := UpdateNextFreeUID(ALoginName, ADestinationMailBox, IntToStr(StrToInt(LNewUID)+1));
@@ -459,7 +480,8 @@ var
 begin
   LFile := NameAndMailBoxToPath(ALoginName, AMailbox) + PathDelim + AMessage.UID + '.txt';  {Do not Localize}
   LRet := FindFirst(LFile, {FileAttrs} 0, LSrchRec);
-  if LRet = 0 then begin
+  if LRet = 0 then
+  begin
     Result := LSrchRec.Size;
     FindClose(LSrchRec);
     Exit;
@@ -541,18 +563,22 @@ begin
   LMailBoxName := StripQuotesIfNecessary(AMailBoxName);
   LRet := FindFirst(ADir+PathDelim+'*.*', faDirectory, LSrchRec);  {Do not Localize}
   while LRet = 0 do begin
-    if (LSrchRec.Attr and faDirectory) <> 0 then begin
+    if (LSrchRec.Attr and faDirectory) <> 0 then
+    begin
       //It is a directory...
-      if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then begin  {Do not Localize}
+      if ((LSrchRec.Name <> '.') and (LSrchRec.Name <> '..')) then
+      begin  {Do not Localize}
         Result := True;  //Got at least one SubMailBox
         LTemp := '';
-        if LMailBoxName <> '' then begin
+        if LMailBoxName <> '' then
+        begin
           LTemp := LMailBoxName + MailBoxSeparator;
         end;
         LTemp := LTemp + LSrchRec.Name;
         LDoesMailBoxHaveSubMailBoxes := GetMailBoxes(ADir+PathDelim+LSrchRec.Name, LTemp, AMailBoxNames, AMailBoxFlags);
         AMailBoxNames.Add(LTemp);
-        if LDoesMailBoxHaveSubMailBoxes = True then begin
+        if LDoesMailBoxHaveSubMailBoxes = True then
+        begin
           AMailBoxFlags.Add('\HasChildren');  {Do not Localize}
         end else begin
           AMailBoxFlags.Add('\HasNoChildren');  {Do not Localize}
@@ -575,7 +601,8 @@ begin
   //Find (or set) the next free
   LDir := NameAndMailBoxToPath(ALoginName, AMailbox)+PathDelim;
   LRet := FindFirst(LDir+'*.uid', {FileAttrs} 0, LSrchRec);  {Do not Localize}
-  if LRet = 0 then begin
+  if LRet = 0 then
+  begin
     LName := ChangeFileExt(LSrchRec.Name, '');
     Result := LName;
     Exit;
@@ -588,7 +615,8 @@ begin
   while LRet = 0 do begin
     //Extract the UID from the filename...
     LName := ChangeFileExt(LSrchRec.Name, '');
-    if StrToInt(LName) > LLargestUIDInUse then begin
+    if StrToInt(LName) > LLargestUIDInUse then
+    begin
       LLargestUIDInUse := StrToInt(LName);
     end;
     LRet := FindNext(LSrchRec);
@@ -608,14 +636,17 @@ begin
   //Delete any existing .uid file...
   LDir := NameAndMailBoxToPath(ALoginName, AMailBoxName)+PathDelim;
   LRet := FindFirst(LDir+'*.uid', {FileAttrs} 0, LSrchRec);  {Do not Localize}
-  if LRet = 0 then begin
-    if DeleteFile(LDir+LSrchRec.Name) = False then begin
+  if LRet = 0 then
+  begin
+    if DeleteFile(LDir+LSrchRec.Name) = False then
+    begin
       Exit;
     end;
   end;
   FindClose(LSrchRec);
   //Create the new UID file...
-  {if FileCreate(LDir + ANewUIDNext + '.uid') <> -1 then begin
+  {if FileCreate(LDir + ANewUIDNext + '.uid') <> -1 then
+  begin
     Result := True;
   end;}
   Result := CreateEmptyFile(LDir + ANewUIDNext + '.uid');  {Do not Localize}
@@ -636,18 +667,21 @@ begin
   Result := False;
   LParams := TStringList.Create;
   BreakApart(ASender.UnparsedParams, ' ', LParams); {Do not Localize}
-  if ReinterpretParamAsMailBox(LParams, 0) = False then begin
+  if ReinterpretParamAsMailBox(LParams, 0) = False then
+  begin
     SendBadReply(ASender, 'Mailbox parameter is invalid.');  {Do not Localize}
     LParams.Free;
     Exit;
   end;
-  if LParams.Count < 1 then begin
+  if LParams.Count < 1 then
+  begin
     //Incorrect number of params...
     SendIncorrectNumberOfParameters(ASender);
     LParams.Free;
     Exit;
   end;
-  if DoesImapMailBoxExist(TIdIMAP4PeerContext(ASender.Context).LoginName, LParams[0]) = False then begin
+  if DoesImapMailBoxExist(TIdIMAP4PeerContext(ASender.Context).LoginName, LParams[0]) = False then
+  begin
     SendNoReply(ASender, 'Mailbox does not exist.');  {Do not Localize}
     LParams.Free;
     Exit;
@@ -657,7 +691,8 @@ begin
     LParams[0],
     TIdIMAP4PeerContext(ASender.Context).MailBox);
   LParams.Free;
-  if AReadOnly = True then begin
+  if AReadOnly = True then
+  begin
     TIdIMAP4PeerContext(ASender.Context).MailBox.State := msReadOnly;
   end else begin
     TIdIMAP4PeerContext(ASender.Context).MailBox.State := msReadWrite;

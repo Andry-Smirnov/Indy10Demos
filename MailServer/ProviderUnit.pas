@@ -8,7 +8,7 @@ unit ProviderUnit;
   Change this before you make a commercial product out of this!!!!
 
   (c)2005
-  Jörg Meier (Bob)
+  Jï¿½rg Meier (Bob)
   briefe@jmeiersoftware.de
 }
 interface
@@ -84,14 +84,16 @@ begin
      Bf^[0].dwSize := Sz;
      ASz := Sz;
      R := RasEnumEntries(nil,nil,Bf,ASz,NR);
-     if (R <> 0) and (ASz > 0) then begin
+     if (R <> 0) and (ASz > 0) then
+     begin
         FreeMem(Bf,Sz);
         GetMem(Bf,ASz);
         Bf^[0].dwSize := Sz;
         RasEnumEntries(nil,nil,Bf,ASz,NR);
      end;
    {$R-}
-     For I := 0 to Nr-1 do begin
+     For I := 0 to Nr-1 do
+     begin
          Result.Add(String(Bf^[I].SzEntryName));
      end;
    {$R+}

@@ -83,8 +83,8 @@ begin
         begin
           Name    := frmMain.cbFTPAddress.Text;
           Address := frmMain.cbFTPAddress.Text;
-          UserName:= frmMain.edUserName.Text;
-          Password:= frmMain.edPassword.Text;
+          UserName := frmMain.edUserName.Text;
+          Password := frmMain.edPassword.Text;
           RootDir := '/';
         end;
     end
