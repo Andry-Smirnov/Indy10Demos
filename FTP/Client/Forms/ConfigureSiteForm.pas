@@ -72,7 +72,7 @@ var
   bCreated : Boolean;
   SI       : Integer;
 begin
-  Result := false;
+  Result := False;
 
   bCreated := SiteIndex = -1;
 
@@ -112,21 +112,21 @@ begin
                    SiteList[SI].Password := edPassword.Text;
                    SiteList[SI].RootDir  := edRootFolder.Text;
 
-                   result := true;
+                   result := True;
                  end;
           mrCancel : begin
                        if bCreated then
                          begin
                            SiteList.Delete(SI);
                          end;
-                       Result := false;
+                       Result := False;
                      end;
           mrNo : begin
                    SiteList.Delete(SI);
-                   result := true;
+                   result := True;
                  end;
         else
-          result := false;
+          result := False;
         end;
       finally
         Free;

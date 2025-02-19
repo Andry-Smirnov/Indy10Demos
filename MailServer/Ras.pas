@@ -358,12 +358,12 @@ Begin
      fOwner     := AOwner;
      fConnected := False;
      fTimer     := tTimer.Create(nil);
-     fReady     := false;
+     fReady     := False;
      fState     := -1;
-     fAborted   := false;
+     fAborted   := False;
      With fTimer do
      begin
-          enabled  := false;
+          enabled  := False;
           Interval := 30000;
           onTimer  := TimeOut;
      end;
@@ -384,9 +384,9 @@ Begin
           fState := Value;
           If Value = RASCS_DONE then
           begin
-             fReady     := true;
-             fConnected := true;
-             fTimer.Enabled := false;
+             fReady     := True;
+             fConnected := True;
+             fTimer.Enabled := False;
           end;
           if Assigned(OnStateChange) then
              OnStateChange(self,Value);
@@ -441,7 +441,7 @@ var                 thisRas     : tRasIdentifier;
                     R           : Integer;
 Begin
      fError    := 0;
-     Connected := false;   { Hangup any pending connection }
+     Connected := False;   { Hangup any pending connection }
      fHandle := 0;
      R := RasDial(nil,nil,fDialParams,1,@MyDialFunc1,fHandle);
      If R <> 0 then
@@ -460,7 +460,7 @@ Begin
           Application.Handlemessage;
           Application.ProcessMessages;
      end;
-     fTimer.enabled := false;
+     fTimer.enabled := False;
 end;
 
 Function  tRasConnection.Connectwith(Ras : String) : Boolean;
@@ -479,7 +479,7 @@ begin
      if R <> 0 then
      begin
         { couldn't get the Dial Params !!! }
-        fAborted := true;
+        fAborted := True;
         exit;
      end;
      if not havePassword then
@@ -495,7 +495,7 @@ var       RasIndex    : Integer;
           thisRas     : tRasIdentifier;
 begin
      fConnected     := False;
-     fTimer.Enabled := false;
+     fTimer.Enabled := False;
      RasHangup(Handle);
      If Handle = 0 then Exit;
      RasIndex := FindRasIndex(Handle);

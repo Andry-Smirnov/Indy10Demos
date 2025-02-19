@@ -233,7 +233,7 @@ begin
   pbProgress.Left   := r.Left;
   pbProgress.Width  := r.Right - r.Left;
   pbProgress.Height := r.Bottom - r.Top;
-  pbProgress.Visible := false;
+  pbProgress.Visible := False;
 end;
 
 procedure TfrmMain.FTPStatus(ASender: TObject; const AStatus: TIdStatus;
@@ -319,7 +319,7 @@ begin
 
   FLastDirStack := TStringList.Create;
   edFolder.Text := '/';
-  lbDirectory.Visible := false;
+  lbDirectory.Visible := False;
   SetControls;
   actHelp.Enabled := FileExists(HelpFile);
 end;
@@ -367,13 +367,13 @@ procedure TfrmMain.FTPWorkBegin(Sender: TObject; AWorkMode: TWorkMode;
 begin
   pbProgress.Max := AWorkCountMax;
   pbProgress.Position := 0;
-  pbProgress.Visible := true;
+  pbProgress.Visible := True;
   Log('Work begin ' + IntToStr(AWorkCountMax), clPurple);
 end;
 
 procedure TfrmMain.FTPWorkEnd(Sender: TObject; AWorkMode: TWorkMode);
 begin
-  pbProgress.Visible := false;
+  pbProgress.Visible := False;
   Log('Work end', clPurple);
 end;
 
@@ -435,7 +435,7 @@ begin
           SaveFile.FileName := s;
           if SaveFile.Execute then
             begin
-              b := true;
+              b := True;
               if FileExists(SaveFile.FileName) then
                 if MessageDlg('File exists overwrite?', mtWarning, [mbYes,mbNo], 0) = mrYes then
                   DeleteFile(SaveFile.FileName);
@@ -668,7 +668,7 @@ end;
 
 procedure TfrmMain.BinaryNottext1Click(Sender: TObject);
 begin
-  TMenuItem(Sender).Checked := true;
+  TMenuItem(Sender).Checked := True;
 end;
 
 end.

@@ -407,7 +407,7 @@ Var       I             : Integer;
           Count         : Integer;
           Connected     : Boolean;
 begin
-     fDoHangup      := false;
+     fDoHangup      := False;
      fNewConnection := False;
      I              := 0;
      Connected      := False;
@@ -423,7 +423,7 @@ begin
                 if connected then
                 begin
                    prvName   := Provider;
-                   fdoHangup := true;
+                   fdoHangup := True;
 //                       LogMessage('Connection with '+prvName + ' established.',2);
                 end;
                 Inc(I);
@@ -439,7 +439,7 @@ begin
          else  {LogMessage('Used already established connection',2)};
          fDoHangup  := False;
          Count      := 1;  //That's <> 0
-         Connected  := true;
+         Connected  := True;
      end;
 
      // if didn't work retry later
@@ -813,7 +813,7 @@ begin
         MBox := GetValidMailBoxName(aServerContext.Username,aServerContext.Password);
         If MBox <> '' Then
         begin
-//             LThread.Authenticated := true;
+//             LThread.Authenticated := True;
 //             LThread.State     := Trans;
              UserData           := tUserData.Create(aServerContext.UserName);
              UserData.MBoxPath  := MBoxRoot+MBox;

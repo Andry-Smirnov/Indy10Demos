@@ -189,7 +189,7 @@ begin
 // the server starting up.
 // You should place your pre and post startup code in InternalServerBeforeStart
 // and InternalServerAfterStart accordingly.
-  Result := false;
+  Result := False;
   if not CheckStartOk then
     exit;
 
@@ -198,7 +198,7 @@ begin
   if not StopServer then
     begin
       Log( 'Error stopping server', clRed );
-      Result := false;
+      Result := False;
       exit;
     end;
 
@@ -217,7 +217,7 @@ begin
 
       if InternalServerBeforeStart then
         begin
-          Server.Active := true;
+          Server.Active := True;
           result := Server.Active;
 
           InternalServerAfterStart;
@@ -233,7 +233,7 @@ begin
         begin
           Log( 'Server not started', clRed );
           Log( E.Message, clRed );
-          Result := false;
+          Result := False;
         end;
     end;
   finally
@@ -250,13 +250,13 @@ begin
 // You should place your pre and post shutdown code in InternalServerBeforeStop
 // and InternalServerAfterStop accordingly.
 
-  Result := false;
+  Result := False;
 
   b := Server.Active;
 
   if InternalServerBeforeStop then
     begin
-      Server.Active := false;
+      Server.Active := False;
       Server.Bindings.Clear;
       Result := not Server.Active;
 
@@ -315,7 +315,7 @@ begin
     begin
       s := Ini.ReadString('Settings', 'IP' + IntToStr(i), '');
       if lbIPs.Items.IndexOf(s) > -1 then
-        lbIPs.Checked[lbIPs.Items.IndexOf(s)] := true;
+        lbIPs.Checked[lbIPs.Items.IndexOf(s)] := True;
     end;
   edServerRoot.Text := Ini.ReadString('Settings', 'ServerRoot', ExtractFilePath(ParamStr(0)) + 'Docs');
 end;
@@ -369,7 +369,7 @@ begin
 // The check options procedure should be used to check commandline options
 // if you wish to support command line options then please add it here.
 // By default port and autostart are supported.
-  bDoAutoStart := false;
+  bDoAutoStart := False;
   for i := 1 to ParamCount do
     begin
       opt := LowerCase(ParamStr(i));
@@ -378,7 +378,7 @@ begin
         edPort.Text := OptValue;
 
       if OptName = 'autostart' then
-        bDoAutoStart := true;
+        bDoAutoStart := True;
     end;
     
   if bDoAutoStart then
@@ -433,21 +433,21 @@ begin
   // Preform your startup code here.  If you do not wish the server to start
   // then simply return false from this function and report back the proper
   // error by calling Log(YourMessage, clRed);
-  result := true;
+  result := True;
 end;
 
 procedure TfrmMain.InternalServerAfterStart;
 begin
 // Your code should go here.  At this point the server is active.
 // So if you need to stop it then you should call StopServer
-// or for a hard halt call Server.Active := false;
+// or for a hard halt call Server.Active := False;
 end;
 
 procedure TfrmMain.InternalServerAfterStop;
 begin
 // Your code should go here.  At this point the server has been stoped.
 // So if you need to start it then you should call StartServer
-// or for a force start call Server.Active := true;
+// or for a force start call Server.Active := True;
 end;
 
 function TfrmMain.InternalServerBeforeStop: Boolean;
@@ -455,7 +455,7 @@ begin
   // Preform your shutdown code here.  If you do not wish the server to stop
   // then simply return false from this function and report back the proper
   // error by calling Log(YourMessage, clRed);
-  Result := true;
+  Result := True;
 end;
 
 procedure TfrmMain.SetControls;

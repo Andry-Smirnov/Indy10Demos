@@ -526,14 +526,14 @@ procedure TfrmMain.InternalServerAfterStart;
 begin
   // Your code should go here.  At this point the server is active.
   // So if you need to stop it then you should call StopServer
-  // or for a hard halt call Server.Active := false;
+  // or for a hard halt call Server.Active := False;
 end;
 
 procedure TfrmMain.InternalServerAfterStop;
 begin
   // Your code should go here.  At this point the server has been stoped.
   // So if you need to start it then you should call StartServer
-  // or for a force start call Server.Active := true;
+  // or for a force start call Server.Active := True;
 end;
 
 function TfrmMain.InternalServerBeforeStop: Boolean;
