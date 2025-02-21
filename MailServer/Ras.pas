@@ -213,7 +213,7 @@ type
 {*                                                          *}
 {************************************************************}
 
-Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must be NIL
+Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must benil
                         szPhonebook    : PChar;	         // full path and filename of phonebook file
                         lpRasEntryName : PArrayRASENTRYNAME;  // buffer to receive entries
                    var  lpcb           : Integer;	 // size in bytes of buffer
@@ -287,7 +287,7 @@ function RasEnumConnectionsA(
                   pcConnections : PDWORD // number of connections written to buffer
                  ) : DWORD; stdcall
 function RasEnumEntriesA(
-                  Reserved : Pointer;	 // reserved, must be NIL
+                  Reserved : Pointer;	 // reserved, must benil
                   szPhonebook : PChar;	 // full path and filename of phonebook file
                   lpRasEntryName : PRASENTRYNAME; // buffer to receive entries
                   lpcb : PDWORD;	 // size in bytes of buffer
@@ -416,39 +416,43 @@ Procedure MyDialFunc1(Hndl     : tHRasConn;
 Var     I      : Integer;
         RasObj : tRasConnection;
 begin
-     I := FindRasIndex(Hndl);
-     if I < 0 then exit;
-     RasObj := tRasIdentifier(RasObjectList[I]).rasObject;
-     with RasObj do begin
-          if ActError = 0 then
-          begin
-               State := NewState;
-          end
-          else
-          begin
-               fError := ActError;
-               fErrMsg := RasGetErrorString(ActError);
-               AbortDial;
-               if Assigned(OnError) then
-                  OnError(RasObj,ErrMsg);
-          end;
-     end;
+  I := FindRasIndex(Hndl);
+  if I < 0 then
+    exit;
+  RasObj := tRasIdentifier(RasObjectList[I]).rasObject;
+  with RasObj do
+  begin
+    If ActError = 0 then
+      begin
+        State := NewState;
+      end
+    else
+      begin
+        fError := ActError;
+        fErrMsg := RasGetErrorString(ActError);
+        AbortDial;
+        If Assigned(OnError) then
+          OnError(RasObj,ErrMsg);
+      end;
+  end;
 end;
 
 Procedure tRasConnection.DialUp;
 { Dial with given DialParams }
 var                 thisRas     : tRasIdentifier;
                     R           : Integer;
-begin
-     fError := 0;
+Begin
+     fError    := 0;
      Connected := False;   { Hangup any pending connection }
      fHandle := 0;
-     R := RasDial(nil, nil, fDialParams, 1, @MyDialFunc1, fHandle);
-     if R <> 0 then begin
+     R := RasDial(nil,nil,fDialParams,1,@MyDialFunc1,fHandle);
+     If R <> 0 then
+     begin
         Raise Exception.create('Verbindungsfehler : '+ErrMsg);
      end;
      fTimer.Enabled := True;
-     if fHandle <= 0 then exit;
+     If fHandle <= 0 then
+       exit;
      new(thisRas);
      thisRas.rasHandle := fhandle;
      thisRas.RasObject := Self;
@@ -523,7 +527,7 @@ end;
 {*       Pascal Interfaces                                  *}
 {*                                                          *}
 {************************************************************}
-Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must be NIL
+Function RasEnumEntries(Reserved       : Pointer;	 // reserved, must benil
                         szPhonebook    : PChar;	         // full path and filename of phonebook file
                         lpRasEntryName : PArrayRASENTRYNAME;  // buffer to receive entries
                    var  lpcb           : Integer;	 // size in bytes of buffer
@@ -656,7 +660,6 @@ begin
     end;
 end;
 
-
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function RasGetIPAddress: string;
 var
@@ -665,24 +668,24 @@ var
     dwCount    : DWORD;
     RASpppIP   : TRASPPPIP;
 begin
-    Result := '';
-    RASConns.dwSize := SizeOf(TRASConn);
-    RASpppIP.dwSize := SizeOf(RASpppIP);
-    dwSize := SizeOf(RASConns);
-    if RASEnumConnectionsA(@RASConns, @dwSize, @dwCount) = 0 then begin
-        if dwCount > 0 then begin
-            dwSize := SizeOf(RASpppIP);
-            RASpppIP.dwSize := SizeOf(RASpppIP);
-            if RASGetProjectionInfoA(RASConns.hRasConn,
-                                     RASP_PppIp,
-                                     @RasPPPIP,
-                                     @dwSize) = 0 then
-                Result := StrPas(RASpppIP.szIPAddress);
-       end;
+  Result          := '';
+  RASConns.dwSize := SizeOf(TRASConn);
+  RASpppIP.dwSize := SizeOf(RASpppIP);
+  dwSize          := SizeOf(RASConns);
+  if RASEnumConnectionsA(@RASConns, @dwSize, @dwCount) = 0 then
+    begin
+      if dwCount > 0 then
+        begin
+          dwSize := SizeOf(RASpppIP);
+          RASpppIP.dwSize := SizeOf(RASpppIP);
+          if RASGetProjectionInfoA(RASConns.hRasConn,
+                                    RASP_PppIp,
+                                    @RasPPPIP,
+                                    @dwSize) = 0 then
+              Result := StrPas(RASpppIP.szIPAddress);
+        end;
     end;
 end;
-
-
 
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 function RasDialA;                 external rasapi32 name 'RasDialA';
@@ -700,6 +703,8 @@ function RasGetProjectionInfoA;    external rasapi32 name 'RasGetProjectionInfoA
 {* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *}
 initialization
         RasObjectList := tList.create;
+
 Finalization
         RasObjectList.Free;
+
 end.

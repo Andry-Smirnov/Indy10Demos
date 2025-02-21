@@ -419,10 +419,11 @@ begin
            begin
                 Connected := RasConn.Connectwith(Provider);
                 fNewConnection := True;
-                if connected then begin
-                   prvName := Provider;
+                if connected then
+                begin
+                   prvName   := Provider;
                    fdoHangup := True;
-//                       LogMessage('Connection with '+prvName + ' established.', 2);
+//                       LogMessage('Connection with '+prvName + ' established.',2);
                 end;
                 Inc(I);
            end;
@@ -434,10 +435,11 @@ begin
 //              LogMessage('Used a LAN connection', 2);
               PrvName := 'Network';
          end
-         else  {LogMessage('Used already established connection', 2)};
-         fDoHangup := False;
-         Count := 1;  //That's <> 0
-         Connected := True;
+         else  
+           {LogMessage('Used already established connection',2)};
+         fDoHangup  := False;
+         Count      := 1;  //That's <> 0
+         Connected  := True;
      end;
 
      // if didn't work retry later
@@ -570,7 +572,7 @@ begin
              end;
         end;
         FreeAndNil(UserData);
-        ASender.Context.Data := Nil;
+        ASender.Context.Data := nil;
      Finally
             DebugOutput('QUIT', ASender);
      end;
@@ -1155,7 +1157,7 @@ Var       UserData  : tUserData;
 begin
       UserData := tUserData(AContext.Data);
       FreeAndNil(UserData);
-      AContext.Data := Nil;
+      AContext.Data := nil;
 end;
 
 procedure TMBoxDataMod.InternalSMTPException(AContext: TIdContext;
@@ -1463,7 +1465,7 @@ procedure TMBoxDataMod.GetSendMail;
 Var       Prvdr    : String;
           MyMailList: TStringList;
 begin
-     MyMailList := Nil;
+     MyMailList := nil;
      SetupExternals;
 // Do we have to dial or connect via LAN
      if ProviderForm.LanChk.Checked then Prvdr := ''

@@ -83,7 +83,7 @@ begin
   wbLicense.Navigate(AppPath + LICENSE_PAGE);
   wbHelp.Navigate(frmMain.HelpFile);
   lblIndyVer.Caption := gsIdProductName+' Version: '+gsIdVersion;
-  lblIndyName.Caption:= 'Components Name: '+gsIdProductName;
+  lblIndyName.Caption := 'Components Name: '+gsIdProductName;
 end;
 
 procedure TfrmAbout.FormShow(Sender: TObject);

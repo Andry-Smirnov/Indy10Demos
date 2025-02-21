@@ -501,7 +501,7 @@ end;
 procedure TfrmMain.FormActivate(Sender: TObject);
 begin
   Top := Ini.ReadInteger('Placement', 'Top', Top);
-  Left:= Ini.ReadInteger('Placement', 'Left', Left);
+  Left := Ini.ReadInteger('Placement', 'Left', Left);
 end;
 
 procedure TfrmMain.ServerExecute(AContext: TIdContext);

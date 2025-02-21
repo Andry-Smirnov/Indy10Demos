@@ -460,7 +460,7 @@ end;
 //else you get: Project IHTTPServer.exe raised exception class EIdHTTPErrorParsingCommand with message 'Error in parsing command.'.
 procedure TfrmMain.ServerQuerySSLPort(APort: Word; var VUseSSL: Boolean);
 begin
-  VUseSSL:=(APort=StrToIntDef(edPort.Text,443));
+  VUseSSL := (APort=StrToIntDef(edPort.Text, 443));
 end;
 
 function TfrmMain.InternalServerBeforeStart: Boolean;
@@ -516,7 +516,7 @@ end;
 procedure TfrmMain.FormActivate(Sender: TObject);
 begin
   Top := Ini.ReadInteger('Placement', 'Top', Top);
-  Left:= Ini.ReadInteger('Placement', 'Left', Left);
+  Left := Ini.ReadInteger('Placement', 'Left', Left);
 end;
 
 procedure TfrmMain.ServerConnect(AContext: TIdContext);
