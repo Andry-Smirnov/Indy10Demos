@@ -16,12 +16,25 @@ unit MainForm;
 
 {$mode Delphi}
 
+
 interface
+
 
 uses
   LCLIntf, LCLType, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  IdComponent, StdCtrls, ClientThread,
-  IdAntiFreeze, IdTCPClient, SyncObjs, ExtCtrls, ComCtrls, IniFiles;
+  IdComponent,
+  StdCtrls,
+  SyncObjs,
+  ExtCtrls,
+  ComCtrls,
+  IniFiles,
+  //
+  IdAntiFreeze,
+  IdTCPClient,
+  //
+  ClientThread
+  ;
+
 
 type
 
@@ -54,31 +67,37 @@ type
     procedure SampleClientWork(Sender: TObject; AWorkMode: TWorkMode;
       const AWorkCount: Integer);
   private
-    { Private declarations }
-    FDefaultCaption   : String;
-    fThreads          : TList;
-    FClientsConnected : Boolean;
-    uiLock            : TCriticalSection;
-    CurrentConnections,
-    MaxConnections,
-    ConnectionsMade   : Integer;
+    FDefaultCaption: string;
+    fThreads: TList;
+    FClientsConnected: Boolean;
+    uiLock: TCriticalSection;
+    CurrentConnections: Integer;
+    MaxConnections: Integer;
+    ConnectionsMade: Integer;
     procedure SetClientsConnected(const Value: Boolean);
     procedure LoadIniSettings;
     procedure WriteIniSettings;
   public
-    { Public declarations }
     procedure StartThreads;
     procedure StopThreads;
-    property ClientsConnected : Boolean read FClientsConnected write SetClientsConnected;
+    property ClientsConnected: Boolean read FClientsConnected write SetClientsConnected;
   end;
+
 
 var
   frmMain: TfrmMain;
-  Ini    : TIniFile;
+  Ini: TIniFile;
+
 
 implementation
 
+
 {$R *.lfm}
+
+
+const
+  DEF_THREADS_COUNT = 2;
+
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
@@ -99,6 +118,7 @@ begin
   fThreads := TList.Create;
 end;
 
+
 procedure TfrmMain.Button1Click(Sender: TObject);
 begin
   SampleClient.Host := edHost.Text;
@@ -109,11 +129,13 @@ begin
     StartThreads;
 end;
 
+
 procedure TfrmMain.edPortKeyPress(Sender: TObject; var Key: Char);
 begin
   if not (Key in ['0', '1'..'9', #8]) then
     Key := #0;
 end;
+
 
 procedure TfrmMain.edThreadsKeyPress(Sender: TObject; var Key: Char);
 begin
@@ -121,11 +143,13 @@ begin
     Key := #0;
 end;
 
+
 procedure TfrmMain.edThreadsChange(Sender: TObject);
 begin
   if edThreads.Text = '' then
     edThreads.Text := '0';
 end;
+
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
@@ -135,6 +159,7 @@ begin
   WriteIniSettings;
   Ini.Free;
 end;
+
 
 procedure TfrmMain.StartThreads;
 var
@@ -152,9 +177,8 @@ begin
   lblTotalCons.Caption := 'Total Connections Made: 0';
 
   st := StrToIntDef(edThreads.Text, 0);
-  if st < 10 then
-    st := 10;
-
+  if st < DEF_THREADS_COUNT then
+    st := DEF_THREADS_COUNT;
   for i := 0 to StrToIntDef(edThreads.Text, 0) -1 do
     begin
       with TClientThread(fThreads[fThreads.Add( TClientThread.Create(True) )]) do
@@ -175,9 +199,9 @@ begin
           Start;
         end;
     end;
-
   ClientsConnected := True;
 end;
+
 
 procedure TfrmMain.StopThreads;
 begin
@@ -190,6 +214,7 @@ begin
         fThreads.Delete(0);
       end;
 end;
+
 
 procedure TfrmMain.SampleClientConnected(Sender: TObject);
 var
@@ -211,11 +236,11 @@ begin
         lblMaxCons.Caption := 'Max Concurrent Connections: ' + IntToStr(MaxConnections);
       end;
     lblTotalCons.Caption := 'Total Connections Made: ' + IntToStr(ConnectionsMade);
-
   finally
     uiLock.Leave;
   end;
 end;
+
 
 procedure TfrmMain.SetClientsConnected(const Value: Boolean);
 begin
@@ -230,6 +255,7 @@ begin
   edPort.Enabled := not Value;
   edThreads.Enabled := not Value;
 end;
+
 
 procedure TfrmMain.SampleClientDisconnected(Sender: TObject);
 var
@@ -248,11 +274,13 @@ begin
   end;
 end;
 
+
 procedure TfrmMain.SampleClientWork(Sender: TObject; AWorkMode: TWorkMode;
   const AWorkCount: Integer);
 begin
 // Do Nothing
 end;
+
 
 procedure TfrmMain.LoadIniSettings;
 begin
@@ -261,11 +289,13 @@ begin
   edThreads.Text := Ini.ReadString('Threads', 'Threads', edThreads.Text);
 end;
 
+
 procedure TfrmMain.WriteIniSettings;
 begin
   Ini.WriteString('Connection', 'Host', edHost.Text);
   Ini.WriteString('Connection', 'Port', edPort.Text);
   Ini.WriteString('Threads', 'Threads', edThreads.Text);
 end;
+
 
 end.

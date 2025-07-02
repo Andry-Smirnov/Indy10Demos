@@ -1,7 +1,7 @@
 object frmMain: TfrmMain
-  Left = 768
+  Left = 983
   Height = 490
-  Top = 333
+  Top = 344
   Width = 356
   Caption = 'Indy Base Client'
   ClientHeight = 490
@@ -9,10 +9,10 @@ object frmMain: TfrmMain
   Color = clBtnFace
   Font.Color = clWindowText
   Font.Height = -11
+  Position = poDesktopCenter
+  LCLVersion = '4.0.0.4'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poDesktopCenter
-  LCLVersion = '3.6.0.0'
   object Bevel1: TBevel
     Left = 0
     Height = 129
@@ -50,7 +50,7 @@ object frmMain: TfrmMain
     Left = 144
     Height = 13
     Top = 80
-    Width = 74
+    Width = 73
     Caption = 'Thread Count:'
   end
   object lblConCons: TLabel

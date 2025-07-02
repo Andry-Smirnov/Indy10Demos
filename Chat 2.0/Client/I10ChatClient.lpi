@@ -5,8 +5,7 @@
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="ClientBase"/>
-      <Scaled Value="True"/>
+      <Title Value="I10ChatClient"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -22,12 +21,6 @@
     </RunParams>
     <RequiredPackages>
       <Item>
-        <PackageName Value="pl_ExControls"/>
-      </Item>
-      <Item>
-        <PackageName Value="pl_Cindy"/>
-      </Item>
-      <Item>
         <PackageName Value="indylaz"/>
       </Item>
       <Item>
@@ -36,7 +29,7 @@
     </RequiredPackages>
     <Units>
       <Unit>
-        <Filename Value="ClientBase.lpr"/>
+        <Filename Value="I10ChatClient.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -46,20 +39,21 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit>
-      <Unit>
-        <Filename Value="Units\ClientThread.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <IncludeFiles Value="Forms;Units;$(ProjOutDir)"/>
-      <OtherUnitFiles Value="Forms;Units"/>
+      <IncludeFiles Value="Forms"/>
+      <OtherUnitFiles Value="Forms"/>
       <UnitOutputDirectory Value="bin"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <SyntaxMode Value="delphi"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Debugging>
         <DebugInfoType Value="dsDwarf3"/>
@@ -71,9 +65,7 @@
       </Options>
     </Linking>
     <Other>
-      <CompilerMessages>
-        <IgnoredMessages idx5024="True"/>
-      </CompilerMessages>
+      <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
     </Other>
   </CompilerOptions>
   <Debugging>
@@ -89,6 +81,12 @@
       </Item>
       <Item>
         <Name Value="EIdSocketError"/>
+      </Item>
+      <Item>
+        <Name Value="EIdConnectTimeout"/>
+      </Item>
+      <Item>
+        <Name Value="EIdNotASocket"/>
       </Item>
     </Exceptions>
   </Debugging>

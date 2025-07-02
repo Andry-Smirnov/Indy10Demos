@@ -5,8 +5,7 @@
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="ClientBase"/>
-      <Scaled Value="True"/>
+      <Title Value="I10ChatServer"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
     </General>
@@ -22,12 +21,6 @@
     </RunParams>
     <RequiredPackages>
       <Item>
-        <PackageName Value="pl_ExControls"/>
-      </Item>
-      <Item>
-        <PackageName Value="pl_Cindy"/>
-      </Item>
-      <Item>
         <PackageName Value="indylaz"/>
       </Item>
       <Item>
@@ -36,7 +29,7 @@
     </RequiredPackages>
     <Units>
       <Unit>
-        <Filename Value="ClientBase.lpr"/>
+        <Filename Value="I10ChatServer.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit>
       <Unit>
@@ -47,7 +40,7 @@
         <ResourceBaseClass Value="Form"/>
       </Unit>
       <Unit>
-        <Filename Value="Units\ClientThread.pas"/>
+        <Filename Value="Units\ChatContextData.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
@@ -56,10 +49,15 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <IncludeFiles Value="Forms;Units;$(ProjOutDir)"/>
+      <IncludeFiles Value="Forms;Units"/>
       <OtherUnitFiles Value="Forms;Units"/>
       <UnitOutputDirectory Value="bin"/>
     </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <SyntaxMode Value="delphi"/>
+      </SyntaxOptions>
+    </Parsing>
     <Linking>
       <Debugging>
         <DebugInfoType Value="dsDwarf3"/>
@@ -71,9 +69,7 @@
       </Options>
     </Linking>
     <Other>
-      <CompilerMessages>
-        <IgnoredMessages idx5024="True"/>
-      </CompilerMessages>
+      <CustomOptions Value="-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL"/>
     </Other>
   </CompilerOptions>
   <Debugging>
@@ -86,9 +82,6 @@
       </Item>
       <Item>
         <Name Value="EFOpenError"/>
-      </Item>
-      <Item>
-        <Name Value="EIdSocketError"/>
       </Item>
     </Exceptions>
   </Debugging>

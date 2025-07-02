@@ -7,9 +7,9 @@
 { http://www.TeamCoherence.com                                         }
 {**********************************************************************}
 {}
-{ $Log:  22978: ChatContextData.pas 
-{
-{   Rev 1.0    09/10/2003 3:16:28 PM  Jeremy Darling
+//{ $Log:  22978: ChatContextData.pas 
+//{
+//{   Rev 1.0    09/10/2003 3:16:28 PM  Jeremy Darling
 { Project uploaded for the first time
 }
 unit ChatContextData;
@@ -72,7 +72,7 @@ begin
             FOnUserNameSet(Self, UN);
           UserName := UN;
           msg := 'Welcome ' + UN + #13#10;
-          Context.Connection.IOHandler.WriteBuffer(msg[1], Length(msg));
+          Context.Connection.IOHandler.Write(msg);
         end
       else
         if Assigned(FOnMsgAvail) then
@@ -89,12 +89,12 @@ begin
   try
     FContext := AContext;
     AContext.Connection.IOHandler.CheckForDisconnect(True, True);
-    I := AContext.Connection.IOHandler.Buffer.Size;
+    I := AContext.Connection.IOHandler.InputBuffer.Size;
     if I >= 1 then
       begin
         Swp := Copy(FCurMsg.Text, 1, Length(FCurMsg.Text) -2);
         SetLength(S, I);
-        AContext.Connection.IOHandler.ReadBuffer(S[1], I);
+        S := AContext.Connection.IOHandler.ReadString(I);
         S := StringReplace(S, #13#10, #10#13, [rfReplaceAll]);
         if (S = #10#13) then
           FCurMsg.Add('')

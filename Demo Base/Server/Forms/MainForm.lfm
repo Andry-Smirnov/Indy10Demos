@@ -1,32 +1,32 @@
 object frmMain: TfrmMain
-  Left = 387
-  Height = 296
-  Top = 214
-  Width = 337
+  Left = 976
+  Height = 311
+  Top = 235
+  Width = 602
   Caption = 'Indy Base Server'
-  ClientHeight = 296
-  ClientWidth = 337
+  ClientHeight = 311
+  ClientWidth = 602
   Color = clBtnFace
   Font.Color = clWindowText
   Font.Height = -11
+  Position = poDesktopCenter
+  LCLVersion = '4.0.0.4'
   OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  Position = poDesktopCenter
-  LCLVersion = '3.6.0.0'
   object pnlButtonBar: TPanel
     Left = 0
     Height = 41
-    Top = 255
-    Width = 337
+    Top = 270
+    Width = 602
     Align = alBottom
-    BevelOuter = bvLowered
+    BevelOuter = bvNone
     ClientHeight = 41
-    ClientWidth = 337
+    ClientWidth = 602
     ParentBackground = False
     TabOrder = 0
     object StartStopButton: TButton
-      Left = 248
+      Left = 513
       Height = 25
       Top = 8
       Width = 75
@@ -38,29 +38,29 @@ object frmMain: TfrmMain
   end
   object pcMain: TPageControl
     Left = 0
-    Height = 255
+    Height = 270
     Top = 0
-    Width = 337
+    Width = 602
     ActivePage = tsSettings
     Align = alClient
     TabIndex = 0
     TabOrder = 1
     object tsSettings: TTabSheet
       Caption = 'Settings'
-      ClientHeight = 229
-      ClientWidth = 329
+      ClientHeight = 244
+      ClientWidth = 594
       object Label2: TLabel
         Left = 4
         Height = 13
         Top = 8
-        Width = 54
+        Width = 55
         Caption = 'Bind to IPs'
       end
       object Label3: TLabel
         Left = 128
         Height = 13
         Top = 8
-        Width = 62
+        Width = 63
         Caption = 'Bind to port'
       end
       object Label4: TLabel
@@ -72,7 +72,7 @@ object frmMain: TfrmMain
       end
       object IPsListBox: TCheckListBox
         Left = 4
-        Height = 193
+        Height = 208
         Top = 24
         Width = 109
         Anchors = [akTop, akLeft, akBottom]
@@ -97,21 +97,16 @@ object frmMain: TfrmMain
         Text = '8800'
         OnKeyPress = PortEditKeyPress
       end
-    end
-    object tsProcessLog: TTabSheet
-      Caption = 'Process Log'
-      ClientHeight = 229
-      ClientWidth = 329
-      ImageIndex = 1
       object ProcessesListBox: TListBox
-        Left = 0
-        Height = 229
+        Left = 288
+        Height = 244
         Top = 0
-        Width = 329
-        Align = alClient
+        Width = 306
+        Align = alRight
+        Anchors = [akTop, akLeft, akRight, akBottom]
         ItemHeight = 13
         Style = lbOwnerDrawFixed
-        TabOrder = 0
+        TabOrder = 3
         OnDrawItem = ProcessesListBoxDrawItem
       end
     end
@@ -136,6 +131,7 @@ object frmMain: TfrmMain
   end
   object IdSchedulerOfThreadDefault1: TIdSchedulerOfThreadDefault
     MaxThreads = 100
+    ThreadPriority = tpLowest
     Left = 256
     Top = 136
   end

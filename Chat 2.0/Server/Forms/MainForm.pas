@@ -1,4 +1,3 @@
-{ $HDR$}
 {**********************************************************************}
 { Unit archived using Team Coherence                                   }
 { Team Coherence is Copyright 2002 by Quality Software Components      }
@@ -7,9 +6,9 @@
 { http://www.TeamCoherence.com                                         }
 {**********************************************************************}
 {}
-{ $Log:  22976: MainForm.pas 
-{
-{   Rev 1.0    09/10/2003 3:16:16 PM  Jeremy Darling
+//{ $Log:  22976: MainForm.pas 
+//{
+//{   Rev 1.0    09/10/2003 3:16:16 PM  Jeremy Darling
 { Project uploaded for the first time
 }
 {***************************************************************
@@ -26,15 +25,24 @@
 ****************************************************************}
 
 unit MainForm;
-
+{$WARN 5024 off : Parameter "$1" not used}
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  IdBaseComponent, IdComponent, IdTCPServer, IdContext, StdCtrls, IdScheduler,
-  IdSchedulerOfThread, IdSchedulerOfThreadDefault, CheckLst, ComCtrls, ExtCtrls,
-  IdDsnCoreResourceStrings, IdStack, IdCoreGlobal, IdSocketHandle, ShellAPI,
-  IniFiles, IdAntiFreezeBase, IdAntiFreeze, ChatContextData;
+  Windows,
+  //Messages,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  //IdBaseComponent,
+  IdComponent, IdTCPServer, IdContext, StdCtrls,
+  //IdScheduler,
+  //IdSchedulerOfThread,
+  IdSchedulerOfThreadDefault, CheckLst, ComCtrls, ExtCtrls,
+  IdDsnCoreResourceStrings, IdStack, IdGlobal, IdSocketHandle, ShellAPI,
+  IniFiles,
+  //IdAntiFreezeBase,
+  IdAntiFreeze, ChatContextData,
+  IdStackWindows
+  ;
 
 type
   TfrmMain = class(TForm)
@@ -74,7 +82,8 @@ type
     procedure edPortKeyPress(Sender: TObject; var Key: Char);
     procedure btnTestClientClick(Sender: TObject);
   private
-    { Private declarations }
+    FContext: TIdContext;
+
     function CheckStartOk : Boolean;
 
     function StartServer : Boolean;
@@ -102,6 +111,7 @@ type
     procedure WriteMessage(Msg : string);
     procedure MsgAvail(Sender: TChatContextData);
 
+    property Context: TIdContext read FContext write FContext;
     property ServerOnline : Boolean read GetServerOnline;
   end;
 
@@ -111,7 +121,7 @@ var
   
 implementation
 
-{$R *.DFM}
+{$R *.LFM}
 
 procedure TfrmMain.btnStartStopClick(Sender: TObject);
 begin
@@ -164,9 +174,20 @@ begin
 end;
 
 function TfrmMain.PortDescription(const PortNumber: Integer): string;
+var
+  StrList: TStringList;
 begin
-// Guess what more code that shouldn't change
-  with GStack.WSGetServByPort(PortNumber) do
+  // Guess what more code that shouldn't change
+  //with GStack.WSGetServByPort(PortNumber) do
+  StrList := TStringList.Create;
+  {$IFDEF WINDOWS}
+    TIdStackWindows(GStack).AddServByPortToList(PortNumber, StrList);
+    with StrList do
+    // method WSGetServByPort deprecated
+    //with TIdStackWindows(GStack).WSGetServByPort(PortNumber) do
+  {$ELSE}
+    {$STOP Only for Windows }
+  {$ENDIF}
     try
       if PortNumber = 0 then
         begin
@@ -452,6 +473,7 @@ begin
   // Preform your startup code here.  If you do not wish the server to start
   // then simply return false from this function and report back the proper
   // error by calling Log(YourMessage, clRed);
+(*
   try
     Server.Greeting.Text.Assign(memGreeting.Lines);
     Result := True;
@@ -462,6 +484,8 @@ begin
         Result := False;
       end;
   end;
+*)
+  Result := True;
 end;
 
 procedure TfrmMain.InternalServerAfterStart;
@@ -514,17 +538,20 @@ procedure TfrmMain.ServerConnect(AContext: TIdContext);
 var
   s : String;
 begin
+  FContext := AContext;
   AContext.Data := TChatContextData.Create;
   TChatContextData(AContext.Data).OnMsgAvail := MsgAvail;
   s := edUserPrompt.Text + #13#10;
-  AContext.Connection.IOHandler.WriteBuffer(s[1], Length(s));
+  AContext.Connection.IOHandler.Write(s);
 
-  Log('Client connection established from ip: ' + AContext.Connection.LocalName, clBlue);
+  //Log('Client connection established from ip: ' + AContext.Connection.LocalName, clBlue);
+  Log('Client connection established from ip: ' + AContext.Connection.IOHandler.Host, clBlue);
 end;
 
 procedure TfrmMain.ServerDisconnect(AContext: TIdContext);
 begin
-  Log('Client connection removed from ip: ' + AContext.Connection.LocalName, clBlue);
+  //Log('Client connection removed from ip: ' + AContext.Connection.LocalName, clBlue);
+  Log('Client connection removed from ip: ' + AContext.Connection.IOHandler.Host, clBlue);
   AContext.Data.Free;
   AContext.Data := nil;
 end;
@@ -548,12 +575,8 @@ begin
   cList := Server.Contexts.LockList;
   try
     for Count := 0 to cList.Count -1 do
-      begin
-        with TIdContext(cList[Count]) do
-          begin
-            Connection.IOHandler.WriteBuffer(Msg[1], Length(Msg));
-          end;
-      end;
+      with TIdContext(cList[Count]) do
+        Connection.IOHandler.Write(Msg);
   finally
     Server.Contexts.UnlockList;
   end;

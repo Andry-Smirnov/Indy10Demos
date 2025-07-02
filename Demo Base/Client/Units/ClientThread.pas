@@ -84,12 +84,14 @@ begin
 end;
 
 
+
 destructor TClientThread.Destroy;
 begin
   Synchronize(FreeListItem);
   FClient.Free;
   inherited;
 end;
+
 
 procedure TClientThread.Execute;
 begin
@@ -104,36 +106,36 @@ begin
           end;
           FLastTick := GetTickCount64;
         end
-      else
+      else if State <> -1 then
         begin
-          if State <> -1 then
+          if GetTickCount64 - FLastTick > 1000 then
             begin
-              if GetTickCount64 - FLastTick > 1000 then
+              State := State + 1;
+              FLastTick := GetTickCount64;
+              if State > SleepTime then
                 begin
-                  State := State + 1;
-                  FLastTick := GetTickCount64;
-                  if State > SleepTime then
-                    begin
-                      State := -3;
-                      FClient.Disconnect;
-                    end;
-                end
-              else
-                Sleep(500);
-            end;
+                  State := -3;
+                  FClient.Disconnect;
+                end;
+            end
+          else
+            Sleep(500);
         end;
     end;
 end;
+
 
 procedure TClientThread.SetListItem(const Value: TListItem);
 begin
   FListItem := Value;
 end;
 
+
 procedure TClientThread.SetSleepTime(const Value: Integer);
 begin
   FSleepTime := Value;
 end;
+
 
 procedure TClientThread.SetState(const Value: Integer);
 begin

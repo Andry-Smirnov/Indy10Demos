@@ -60,7 +60,11 @@ uses
   IdStackWindows;
 
 type
+
+  { TfrmMain }
+
   TfrmMain = class (TForm)
+    ProcessesListBox: TListBox;
     Server: TIdTCPServer;
     pnlButtonBar: TPanel;
     pcMain: TPageControl;
@@ -71,8 +75,6 @@ type
     IPsListBox: TCheckListBox;
     PortsComboBox: TComboBox;
     PortEdit: TEdit;
-    tsProcessLog: TTabSheet;
-    ProcessesListBox: TListBox;
     StartStopButton: TButton;
     IdAntiFreeze1: TIdAntiFreeze;
     IdSchedulerOfThreadDefault1: TIdSchedulerOfThreadDefault;
@@ -88,7 +90,6 @@ type
     procedure ServerDisconnect(AContext: TIdContext);
     procedure PortEditKeyPress(Sender: TObject; var Key: char);
   private
-    { Private declarations }
     function CheckStartOk: Boolean;
 
     function StartServer: Boolean;
@@ -112,15 +113,17 @@ type
     procedure Log(Msg: string; AColor: TColor = clBlack);
     procedure SetControls;
   public
-    { Public declarations }
     property ServerOnline: Boolean read GetServerOnline;
   end;
+
 
 var
   frmMain: TfrmMain;
   Ini: TIniFile;
 
+
 implementation
+
 
 {$R *.lfm}
 
@@ -137,6 +140,7 @@ begin
   else
     StartServer;
 end;
+
 
 function TfrmMain.CheckStartOk: Boolean;
 var
@@ -157,6 +161,7 @@ begin
   end;
   // Add your code after this comment
 end;
+
 
 function GetPorts: TIdPortList;
 var
@@ -212,6 +217,7 @@ begin
   Result := _GIdPorts;
 end;
 
+
 procedure TfrmMain.PopulateIPAddresses;
 var
   i: Integer;
@@ -232,6 +238,7 @@ begin
     PortsComboBox.Items.EndUpdate;
   end;
 end;
+
 
 function TfrmMain.PortDescription(const PortNumber: Integer): string;
 var
@@ -265,6 +272,7 @@ begin
       StrList.Free;
     end;
 end;
+
 
 function TfrmMain.StartServer: Boolean;
 var
@@ -329,6 +337,7 @@ begin
   end;
 end;
 
+
 function TfrmMain.StopServer: Boolean;
 var
   b: Boolean;
@@ -389,6 +398,7 @@ begin
   Ini.Free;
 end;
 
+
 procedure TfrmMain.LoadDefaultValues;
 var
   i: Integer;
@@ -407,6 +417,7 @@ begin
         IPsListBox.Checked[IPsListBox.Items.IndexOf(s)] := True;
     end;
 end;
+
 
 procedure TfrmMain.SaveDefaultValues;
 var
@@ -428,6 +439,7 @@ begin
   Ini.WriteInteger('Placement', 'Top', Top);
   Ini.WriteInteger('Placement', 'Left', Left);
 end;
+
 
 procedure TfrmMain.CheckOptions;
 var
@@ -475,6 +487,7 @@ begin
     StartServer;
 end;
 
+
 function TfrmMain.GetServerOnline: Boolean;
 begin
   // Just a faster way then checking server.active for some
@@ -494,6 +507,7 @@ begin
     end;
 end;
 
+
 procedure TfrmMain.Log(Msg: string; AColor: TColor);
 begin
   // Simply adds a new item to the process log and then makes it the
@@ -502,17 +516,20 @@ begin
   ProcessesListBox.ItemIndex := ProcessesListBox.Items.Count - 1;
 end;
 
+
 procedure TfrmMain.ServerStatus(ASender: TObject; const AStatus: TIdStatus; const AStatusText: string);
 begin
   // Logs any ServerStatus messages to the Process Log
   Log(AStatusText);
 end;
 
+
 procedure TfrmMain.ServerException(AContext: TIdContext; AException: Exception);
 begin
   // Logs any server exceptions to the Process Log
   Log(AException.Message, clRed);
 end;
+
 
 function TfrmMain.InternalServerBeforeStart: Boolean;
 begin
@@ -522,12 +539,14 @@ begin
   Result := True;
 end;
 
+
 procedure TfrmMain.InternalServerAfterStart;
 begin
   // Your code should go here.  At this point the server is active.
   // So if you need to stop it then you should call StopServer
   // or for a hard halt call Server.Active := False;
 end;
+
 
 procedure TfrmMain.InternalServerAfterStop;
 begin
@@ -536,6 +555,7 @@ begin
   // or for a force start call Server.Active := True;
 end;
 
+
 function TfrmMain.InternalServerBeforeStop: Boolean;
 begin
   // Preform your shutdown code here.  If you do not wish the server to stop
@@ -543,6 +563,7 @@ begin
   // error by calling Log(YourMessage, clRed);
   Result := True;
 end;
+
 
 procedure TfrmMain.SetControls;
 begin
@@ -553,32 +574,37 @@ begin
   PortsComboBox.Enabled := not ServerOnline;
 end;
 
+
 procedure TfrmMain.FormActivate(Sender: TObject);
 begin
   Top := Ini.ReadInteger('Placement', 'Top', Top);
   Left := Ini.ReadInteger('Placement', 'Left', Left);
 end;
 
+
 procedure TfrmMain.ServerExecute(AContext: TIdContext);
 begin
   // Your stuff for OnExecute goes here.
-
 end;
+
 
 procedure TfrmMain.ServerConnect(AContext: TIdContext);
 begin
   Log('Client connection established from ip: ' + AContext.Connection.Socket.Host, clBlue);
 end;
 
+
 procedure TfrmMain.ServerDisconnect(AContext: TIdContext);
 begin
   Log('Client connection removed from ip: ' + AContext.Connection.Socket.Host, clBlue);
 end;
+
 
 procedure TfrmMain.PortEditKeyPress(Sender: TObject; var Key: char);
 begin
   if not (Key in ['0', '1'..'9', #8]) then
     Key := #0;
 end;
+
 
 end.
